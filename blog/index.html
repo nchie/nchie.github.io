@@ -1,0 +1,25 @@
+---
+layout: page
+title: Blog
+permalink: /blog/
+---
+
+{% assign visible_posts = site.posts | where_exp: "post", "post.unlisted != true" %}
+
+{% if visible_posts.size == 0 %}
+  <p>No posts yet. Stay tuned!</p>
+{% else %}
+  <div class="posts">
+    {% for post in visible_posts %}
+      <article class="post-card">
+        <a href="{{ post.url | relative_url }}">
+          <h2>{{ post.title }}</h2>
+        </a>
+        <p class="meta">{{ post.date | date: "%B %-d, %Y" }}</p>
+        {% if post.excerpt %}
+          <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+{% endif %}
