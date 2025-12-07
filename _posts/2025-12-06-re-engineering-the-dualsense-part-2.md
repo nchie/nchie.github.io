@@ -42,8 +42,8 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
 
 
 <figure>
-  <img width="452" src="/images/WHO_AM_I.png" alt="Capturing WHO_AM_I in Saleae Logic 2">
-  <figcaption>Text under saying "The very first command is `0xF5`, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. `0xF5` therefore means `read 0x75 (WHO_AM_I)`, to which it gets the expected `0x60` back</figcaption>
+  <img width="452" src="/images/WHO_AM_I.png" alt="Capturing WHO_AM_I in Saleae Logic 2" data-lightbox data-lightbox-src="/images/WHO_AM_I.png" data-lightbox-caption="WHO_AM_I capture: 0xF5 means read 0x75 (WHO_AM_I), response 0x60">
+  <figcaption>The very first command is `0xF5`, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. `0xF5` therefore means `read 0x75 (WHO_AM_I)`, to which it gets the expected `0x60` back</figcaption>
 </figure>
 
 CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).

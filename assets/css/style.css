@@ -325,6 +325,66 @@ figure img {
   height: auto;
 }
 
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.lightbox-overlay.open {
+  display: flex;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+.lightbox-frame {
+  position: relative;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  z-index: 1;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.lightbox-frame img {
+  max-width: 85vw;
+  max-height: 70vh;
+  height: auto;
+  border-radius: 10px;
+}
+
+.lightbox-caption {
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   padding: 24px 0 28px;
