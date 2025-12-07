@@ -17,22 +17,34 @@ In the last post I went through the idea I've had, some basic investigation, and
 
 As I mentioned previously, my soldering experience is almost non-existent and in the past I've ended up bricking things. This time I wanted to learn it properly so took some time to practice soldering components onto SMD practice boards. After getting the basics down I ended up buying a cheap malfunctioning (stick drift) controller to practice on (revision 2, BDM-020), and to my surprise I found it much easier than I had imagined to solder thin wires to (random) test pads. While at it I decided I wanted to continue on the BDM-020 a little bit more, but the BDM-020 doesn't have any obvious test pads for the IMU, so I scraped some vias hoping to find pads which had continuity to the IMU. Sadly could not find any, and therefore I ended up soldering wires to the vias instead to analyze the communication between the MCU and IMU.
 
-[TODO: Insert picture IMG_3522.jpeg here]
+<LightboxImage
+  client:load
+  src="/images/soldered-BDM-020.jpeg"
+  alt="Soldered to vias for the InvenSense ICM-40608's traces on a DualSense BDM-020"
+/>
 
 I won't go into much detail regarding the BDM-020 but I will say that it's very similar except it's using a older but slightly higher specced IMU: The InvenSense ICM-40608. I will however be mentioning some differences I've found between how the BDM-020 and the BDM-050 use their IMUs as we go.
 
-### Soldering
+### Soldering onto the BDM-050 PCB
 
 Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some kapton tape on top of it to make it a little bit more durable.
 
-[TODO: Insert picture IMG_3637.jpeg and IMG_3653.jpeg here]
+<LightboxImage
+  client:load
+  src="/images/soldered-BDM-050.jpeg"
+  alt="Soldered to test pads for the InvenSense ICM-42607-P on a DualSense BDM-050"
+/>
 
 ### Analyzing
-[TODO: Insert picture IMG_3634.jpeg or IMG_3649.jpeg here]
+<LightboxImage
+  client:load
+  src="/images/analyzing-BDM-050.jpeg"
+  alt="Using Saleae Logic 2 to analyze the communication between the DualSense BDM-050's MCU and its InvenSense ICM-42607-P IMU"
+/>
 
 [TODO: Insert video IMG_3651.MOV here?]
 
-TODO: Finding clock rate and protocol
+TODO: Finding clock rate
 
 By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add description)) wire is going low when the other wires are active - CS would have been constant if it was I²C, so the assumption regarding SPI being used seems correct. Now we need to figure out which SPI mode is being used which means we need to know 2 things:
 
@@ -67,13 +79,14 @@ WRITE 1 byte(s) - INT_SOURCE0 (0x2B): [0x08] - INT_SOURCE0: INT1 sources = Data 
 WRITE 1 byte(s) - DRIVE_CONFIG3 (0x05): [0x04] - DRIVE_CONFIG3: SPI slew rate 2-6 ns
 ```
 
-Some interesting notes from this:
-
-- 2000 dps, a _lot_ higher than the Alpakka which does 125 and 500.
-- 1.6 kHz
-- Interrupts configured for DATA_READY
-- TODO: Gyro configured to use LPF?
-- TODO: What is temp DLPF?
+Some observations from this sequence:
+- The WHO_AM_I read confirms that we are indeed talking to an ICM-42607-P.
+- The IMU is configured to use 4-wire SPI in mode 3 as we determined
+- Both gyro and accelerometer are set to 1.6 kHz ODR (Output Data Rate)
+- Gyro full scale is set to ±2000 dps
+  - The Alpakka uses 125 and 500 dps modes, so this is very high in comparison
+- INT1 is configured to signal DATA_READY
+  - I found that each read was preceded by an interrupt on the INT1 line on the BDM-020, but the BDM-050 doesn't have test pads for the INT1 line so I will assume it works the same.
 
 After this we see repeating reads similar to this one to get the gyro data:
 
