@@ -352,9 +352,9 @@ figure[data-slider] img.active {
 }
 
 figcaption {
-  margin-top: 8px;
   color: var(--muted);
   text-align: center;
+  font-size: 14px;
 }
 
 figure img {

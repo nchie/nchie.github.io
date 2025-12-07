@@ -27,7 +27,7 @@ I won't go into much detail regarding the BDM-020 but I will say that it's very 
 
 ### Soldering onto the BDM-050 PCB
 
-Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some kapton tape on top of it to make it a little bit more durable.
+Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some Kapton tape on top of it to make it a little bit more durable.
 
 <LightboxImage
   client:load
@@ -62,6 +62,13 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
 
 CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
 
+<LightboxImage
+  client:load
+  src="/images/Saleae-Logic-2-HLA.png"
+  alt="Saleae Logic 2 with custom high-level analyzer for the ICM-42607-P IMU"
+  caption="The LLM-generated extension made it much easier to understand what's happening"
+/>
+
 These are the transaction summaries from capturing the boot-up sequence:
 
 ```
@@ -83,8 +90,10 @@ Some observations from this sequence:
 - The WHO_AM_I read confirms that we are indeed talking to an ICM-42607-P.
 - The IMU is configured to use 4-wire SPI in mode 3 as we determined
 - Both gyro and accelerometer are set to 1.6 kHz ODR (Output Data Rate)
+  - The BDM-020 with the ICM-40608 used 1 kHz ODR instead
 - Gyro full scale is set to ±2000 dps
   - The Alpakka uses 125 and 500 dps modes, so this is very high in comparison
+  - This was the same on the BDM-020 with the ICM-40608
 - INT1 is configured to signal DATA_READY
   - I found that each read was preceded by an interrupt on the INT1 line on the BDM-020, but the BDM-050 doesn't have test pads for the INT1 line so I will assume it works the same.
 
