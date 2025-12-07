@@ -28,6 +28,45 @@ a:hover {
   text-decoration: underline;
 }
 
+.code-block {
+  margin: 18px 0;
+}
+
+pre {
+  background: #111827;
+  color: #e5e7eb;
+  border-radius: 12px;
+  border: 1px solid #0f172a;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: "SFMono-Regular", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  box-shadow: 0 12px 30px rgba(12, 12, 36, 0.18);
+}
+
+code {
+  font-family: "SFMono-Regular", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+}
+
+p code,
+li code {
+  background: #e8ecef;
+  color: #0f172a;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #d4d9df;
+}
+
+.code-block code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
 .tooltip {
   position: relative;
   border-bottom: 1px dotted var(--muted);

@@ -44,7 +44,6 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
   client:load
   src="/images/WHO_AM_I.png"
   alt="Capturing WHO_AM_I in Saleae Logic 2"
-  width={452}
   caption="The very first command is `0xF5`, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. `0xF5` therefore means `read 0x75 (WHO_AM_I)`, to which it gets the expected `0x60` back."
 />
 
