@@ -30,7 +30,6 @@ export function ImageSlider({ images, caption }: ImageSliderProps) {
           alt={img.alt}
           width={img.width}
           class={i === index ? "active" : ""}
-          loading="lazy"
         />
       ))}
 
