@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Create overlay once.
   const overlay = document.createElement("div");
   overlay.className = "lightbox-overlay";
+  overlay.style.display = "none";
   overlay.innerHTML = `
     <div class="lightbox-backdrop"></div>
     <div class="lightbox-frame">
@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.body.appendChild(overlay);
 
-  const frame = overlay.querySelector(".lightbox-frame");
   const img = overlay.querySelector("img");
   const caption = overlay.querySelector(".lightbox-caption");
   const closeBtn = overlay.querySelector(".lightbox-close");
@@ -22,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     caption.textContent = text || "";
     overlay.classList.add("open");
     overlay.style.display = "flex";
-    img.focus({ preventScroll: true });
   };
 
   const close = () => {

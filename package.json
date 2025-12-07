@@ -1,0 +1,22 @@
+{
+  "name": "astro-blog",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^2.3.0",
+    "@astrojs/preact": "^4.1.0",
+    "astro": "^4.13.0",
+    "preact": "^10.20.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

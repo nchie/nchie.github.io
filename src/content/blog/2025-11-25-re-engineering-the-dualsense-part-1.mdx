@@ -1,9 +1,9 @@
 ---
-title: "Re-Engineering the DualSense (Part 1)"
-display_title: "Re-Engineering the DualSense"
-display_subtitle: "Part 1: Origins, Motivation, and Early Exploration"
+title: "Re-Engineering the DualSense"
+subtitle: "Part 1: Origins, Motivation, and Early Exploration"
+pubDate: "2025-11-25"
 unlisted: false
-summary: 
+summary: ""
 comments: true
 ---
 
@@ -38,7 +38,7 @@ To start off I was able to find a [clear picture from a post on Reddit](https://
 By cross-referencing the 4th revision's pins, traces and test pads to the TDK InvenSense ICM-42607-P pinout from its [datasheet](https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589785219927736320), it looks like the test pads are coming from the following 4 pins:
 
 <figure>
-  <img width="452" src="https://github.com/user-attachments/assets/fb54a58f-8b37-446f-bffd-d687cba61379" alt="ICM-42607-P-pinout">
+  <img width="452" src="https://github.com/user-attachments/assets/fb54a58f-8b37-446f-bffd-d687cba61379" alt="ICM-42607-P-pinout" />
   <figcaption>Pinout of the TDK InvenSense ICM-42607-P</figcaption>
 </figure>
 
@@ -49,8 +49,8 @@ By reading more from the datasheet, we can see that it supports the I2C, I3C and
 The more I investigated, the more plausible the idea seemed. Since I hope for the final mod to be usable for others, it's better if it's made for a revision which you're still able to find in stores, so I ended up ordering a new controller and opening it up to find that it was the 5th revision - BDM-050. The test pads were still there, _and_ it clearly said I467P on the IMU - great! Assuming it does use SPI, here are some markings for what the pins and test pads are.
 
 <figure data-slider>
-  <img width="768" src="https://github.com/user-attachments/assets/aec02e64-846a-4b8f-87df-abd4d65de4d2" alt="BDM-050 Side B with marked pads">
-  <img width="768" src="https://github.com/user-attachments/assets/4048230b-d7f0-4869-aef6-ad5753602c6a" alt="BDM-050 Side A with marked pads">
+  <img width="768" src="https://github.com/user-attachments/assets/aec02e64-846a-4b8f-87df-abd4d65de4d2" alt="BDM-050 Side B with marked pads" />
+  <img width="768" src="https://github.com/user-attachments/assets/4048230b-d7f0-4869-aef6-ad5753602c6a" alt="BDM-050 Side A with marked pads" />
   <figcaption>BDM-050 IMU pins and test pads</figcaption>
 </figure>
 
@@ -86,7 +86,6 @@ Another issue I had was that my hardware lab is pretty much non-existant because
 - Kapton tape
 - Tweezers
 - ...another malfunctioning and cheap 2nd hand DualSense controller to practice soldering, scraping vias, and cutting traces on.
-
 
 ## Next Up!
 

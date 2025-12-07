@@ -1,0 +1,29 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.unlisted)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+---
+
+<PageLayout title="Blog">
+  {posts.length === 0 ? (
+    <p>No posts yet. Stay tuned!</p>
+  ) : (
+    <div class="posts">
+      {posts.map((post) => (
+        <article class="post-card">
+          <a href={`/blog/${post.slug}/`}>
+            <h2>{post.data.title}</h2>
+          </a>
+          <p class="meta">
+            {new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(post.data.pubDate)}
+          </p>
+          {post.data.subtitle && <p class="small">{post.data.subtitle}</p>}
+          {post.data.summary && <p>{post.data.summary}</p>}
+        </article>
+      ))}
+    </div>
+  )}
+</PageLayout>

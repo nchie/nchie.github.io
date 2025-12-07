@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // A hidden measurer to clamp tooltip width within viewport.
+  // Hidden measurer to clamp tooltip width within viewport.
   const measure = document.createElement("div");
   measure.className = "tooltip-measure";
   document.body.appendChild(measure);
@@ -22,18 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Enable touch-to-toggle on tooltips for mobile while keeping hover on desktop.
   document.querySelectorAll(".tooltip").forEach((el) => {
     el.addEventListener("click", (e) => {
-      // Prevent following links when the tooltip is inside one.
       e.preventDefault();
       clampTooltipShift(el);
-      // Toggle active state for this tooltip only.
       const wasActive = el.classList.contains("touch-active");
-      document
-        .querySelectorAll(".tooltip.touch-active")
-        .forEach((tip) => tip.classList.remove("touch-active"));
+      document.querySelectorAll(".tooltip.touch-active").forEach((tip) => tip.classList.remove("touch-active"));
       if (!wasActive) {
         el.classList.add("touch-active");
       }
     });
+
     el.addEventListener("mouseenter", () => clampTooltipShift(el));
     el.addEventListener("focus", () => clampTooltipShift(el));
   });
@@ -42,9 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     const target = e.target;
     if (!target.closest(".tooltip")) {
-      document
-        .querySelectorAll(".tooltip.touch-active")
-        .forEach((tip) => tip.classList.remove("touch-active"));
+      document.querySelectorAll(".tooltip.touch-active").forEach((tip) => tip.classList.remove("touch-active"));
     }
   });
 });

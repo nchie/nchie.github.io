@@ -1,0 +1,31 @@
+---
+import { giscus } from "../config/site";
+
+const enabled =
+  giscus.repo &&
+  giscus.repoId &&
+  giscus.category &&
+  giscus.categoryId;
+---
+
+{enabled ? (
+  <section class="comments">
+    <script
+      src="https://giscus.app/client.js"
+      data-repo={giscus.repo}
+      data-repo-id={giscus.repoId}
+      data-category={giscus.category}
+      data-category-id={giscus.categoryId}
+      data-mapping={giscus.mapping || "pathname"}
+      data-reactions-enabled={giscus.reactionsEnabled || "1"}
+      data-emit-metadata={giscus.emitMetadata || "0"}
+      data-input-position={giscus.inputPosition || "bottom"}
+      data-theme={giscus.theme || "light"}
+      data-lang={giscus.lang || "en"}
+      crossorigin="anonymous"
+      async
+    ></script>
+  </section>
+) : (
+  <p class="small">Comments are not configured yet.</p>
+)}

@@ -50,7 +50,7 @@ a:hover {
   line-height: 1.4;
   box-shadow: 0 10px 30px rgba(12, 48, 38, 0.12);
   white-space: normal;
-  min-width: 220px;
+  min-width: 140px;
   max-width: 320px;
   text-align: center;
   opacity: 0;
@@ -80,7 +80,7 @@ a:hover {
   font-size: 14px;
   line-height: 1.4;
   white-space: normal;
-  min-width: 220px;
+  min-width: 140px;
   max-width: 320px;
   text-align: center;
 }

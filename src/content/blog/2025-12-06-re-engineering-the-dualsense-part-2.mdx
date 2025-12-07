@@ -1,14 +1,13 @@
 ---
-title: "Re-Engineering the DualSense (Part 2)"
-display_title: "Re-Engineering the DualSense"
-display_subtitle: "Part 2: Analyzing the Controller"
+title: "Re-Engineering the DualSense"
+subtitle: "Part 2: Analyzing the Controller"
+pubDate: "2025-12-06"
 unlisted: true
-summary: 
+summary: ""
 comments: true
 ---
 
 In the last post I went through the idea I've had, some basic investigation, and a shopping list of things which I ordered to be able to take it further. In this post I will be going through soldering, analyzing the communication between the DualSense MCU and its IMU, as well as a plan on how we can design a mod around it.
-
 
 ### Practicing
 
@@ -18,14 +17,11 @@ As I mentioned previously, my soldering experience is almost non-existent and in
 
 I won't go into much detail regarding the BDM-020 but I will say that it's very similar except it's using a older but slightly higher specced IMU: The InvenSense ICM-40608. I will however be mentioning some differences I've found between how the BDM-020 and the BDM-050 use their IMUs as we go.
 
-
 ### Soldering
 
 Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some kapton tape on top of it to make it a little bit more durable.
 
-
 [TODO: Insert picture IMG_3637.jpeg and IMG_3653.jpeg here]
-
 
 ### Analyzing
 [TODO: Insert picture IMG_3634.jpeg or IMG_3649.jpeg here]
@@ -35,15 +31,25 @@ Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some
 TODO: Finding clock rate and protocol
 
 By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add description)) wire is going low when the other wires are active - CS would have been constant if it was I²C, so the assumption regarding SPI being used seems correct. Now we need to figure out which SPI mode is being used which means we need to know 2 things:
+
 - CPOL: In what state does the CLK (TODO: Add description) wire idle?
   - This is very easy to see: It's idling high, meaning CPOL = 1.
 - CPHA: Is the data from MISO/MOSI (TODO: Add descriptions) wires sampled on the leading edge (falling for CPOL = 1) or trailing edge (rising for CPOL = 1)?
   - Since I know that the response to WHO_AM_I should be 0x60 from the datasheet, I set up an SPI analyzer in Logic 2, tried both settings, and found CPHA=1 to be the one which gave 0x60 on the MISO, meaning it's sampling on trailing edges.
 
-
 <figure>
-  <img width="452" src="/images/WHO_AM_I.png" alt="Capturing WHO_AM_I in Saleae Logic 2" data-lightbox data-lightbox-src="/images/WHO_AM_I.png" data-lightbox-caption="WHO_AM_I capture: 0xF5 means read 0x75 (WHO_AM_I), response 0x60">
-  <figcaption>The very first command is `0xF5`, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. `0xF5` therefore means `read 0x75 (WHO_AM_I)`, to which it gets the expected `0x60` back</figcaption>
+  <img
+    width="452"
+    src="/images/WHO_AM_I.png"
+    alt="Capturing WHO_AM_I in Saleae Logic 2"
+    data-lightbox
+    data-lightbox-src="/images/WHO_AM_I.png"
+    data-lightbox-caption="WHO_AM_I capture: 0xF5 means read 0x75 (WHO_AM_I), response 0x60"
+  />
+  <figcaption>
+    The very first command is `0xF5`, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. `0xF5`
+    therefore means `read 0x75 (WHO_AM_I)`, to which it gets the expected `0x60` back.
+  </figcaption>
 </figure>
 
 CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
@@ -66,6 +72,7 @@ WRITE 1 byte(s) – DRIVE_CONFIG3 (0x05): [0x04] – DRIVE_CONFIG3: SPI slew rat
 ```
 
 Some interesting notes from this:
+
 - 2000 dps, a _lot_ higher than the Alpakka which does 125 and 500.
 - 1.6 kHz
 - Interrupts configured for DATA_READY

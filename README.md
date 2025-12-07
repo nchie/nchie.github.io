@@ -1,50 +1,49 @@
-# Personal CV + Blog (Jekyll)
+# Personal CV + Blog (Astro + Preact + MDX)
 
-This repository hosts a Jekyll-powered personal site with an About landing page and a blog under `/blog`. Blog posts live in `_posts/` and unlisted posts are supported via a front matter flag.
+Static site built with Astro, Preact integration, and MDX content. Posts live in `src/content/blog` and render under `/blog/slug`.
 
 ## Structure
-- `index.md` — About landing page (home).
-- `blog/index.html` — Blog listing (excludes unlisted posts).
-- `_posts/` — Blog posts (URLs like `/blog/title` via permalink).
-- `_layouts/`, `_includes/` — Templates and shared chrome.
-- `assets/css/style.css` — Site styles.
-- `_config.yml` — Site settings (`url`, `baseurl`, metadata, plugins).
-- `images` — Static images served
+- `astro.config.mjs` — Astro setup with Preact + MDX.
+- `src/pages/` — Routes (`/`, `/blog`, `/blog/[slug]`).
+- `src/layouts/` — Base, page, and post layouts.
+- `src/content/blog/` — MDX posts with frontmatter (includes `unlisted` + `comments` flags).
+- `src/styles/global.css` — Global styling, slider, tooltips, lightbox.
+- `public/` — Static assets and JS (`/images`, `/scripts`).
+- `src/config/site.ts` — Site metadata + Giscus config.
 
-## Local setup
-1) Install Ruby (matching the version in the GitHub Actions workflow, 3.1).
-2) Install bundler if needed: `gem install bundler`.
-3) Install dependencies: `bundle install`.
+## Prereqs
+- Node.js 20+
 
-## Run locally
+## Install & run
 ```sh
-bundle exec jekyll serve
+npm install
+npm run dev   # http://localhost:4321
 ```
-Then open `http://localhost:4000`. If using a `baseurl`, append it (e.g., `http://localhost:4000/repo-name`).
 
-## Create a post
+## Build
 ```sh
-# filename format: YYYY-MM-DD-title.md
-cat > _posts/2024-03-01-new-post.md <<'EOF'
+npm run build
+```
+Output goes to `dist/`.
+
+## Add a post
+Create `src/content/blog/2025-01-01-my-post.mdx`:
+```md
 ---
-title: My new post
-summary: Optional short blurb
-# set unlisted: true to hide from the blog index
+title: "My post"
+subtitle: "Optional subtitle"
+pubDate: "2025-01-01"
+summary: "Optional short blurb"
+unlisted: false   # set true to hide from /blog
+comments: true    # set false to disable Giscus
 ---
 
-Your markdown content here.
-EOF
+Your MDX/Markdown content here.
 ```
 
 ## Comments (Giscus)
-1) Enable Discussions on your GitHub repo and install the Giscus app (https://giscus.app).
-2) From giscus.app, select your repo + category and copy the generated values into `_config.yml` under the `giscus` block:
-   - `repo`, `repo_id`, `category`, `category_id`
-   - optional: `mapping`, `theme`, `lang`, `reactions_enabled`, `emit_metadata`
-3) Comments appear on posts when configured. To disable for a specific post, set in front matter:
-   ```yaml
-   comments: false
-   ```
+- Fill `src/config/site.ts` `giscus` fields (`repo`, `repoId`, `category`, `categoryId`, etc.).
+- Comments render on posts unless `comments: false` in the frontmatter.
 
 ## Deployment
-GitHub Actions (`.github/workflows/jekyll.yml`) builds and deploys on push to the default branch. Ensure `url`/`baseurl` in `_config.yml` match your GitHub Pages site. If your default branch is `main`, update the workflow trigger accordingly.
+- GitHub Actions workflow in `.github/workflows/astro.yml` builds and deploys to Pages (`dist/`). Ensure repo Pages is set to GitHub Actions. Adjust `site` in `astro.config.mjs` if your domain changes.

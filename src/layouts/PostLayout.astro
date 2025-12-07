@@ -1,0 +1,33 @@
+---
+import Base from "./Base.astro";
+import Giscus from "../components/Giscus.astro";
+
+type Frontmatter = {
+  title: string;
+  subtitle?: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  unlisted?: boolean;
+  comments?: boolean;
+};
+
+const { frontmatter } = Astro.props as { frontmatter: Frontmatter };
+const formatter = new Intl.DateTimeFormat("en", { dateStyle: "long" });
+---
+
+<Base>
+  <article class="post">
+    <div class="container narrow">
+      <p class="post-meta">
+        <span>{formatter.format(frontmatter.pubDate)}</span>
+        {frontmatter.unlisted && <span class="pill">Unlisted</span>}
+      </p>
+      <h1 class="post-title">{frontmatter.title}</h1>
+      {frontmatter.subtitle && <p class="post-subtitle">{frontmatter.subtitle}</p>}
+      <div class="post-body">
+        <slot />
+      </div>
+      {frontmatter.comments !== false && <Giscus />}
+    </div>
+  </article>
+</Base>
