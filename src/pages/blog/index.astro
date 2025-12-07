@@ -14,7 +14,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.unlisted)).sort(
     <div class="posts">
       {posts.map((post) => (
         <article class="post-card">
-          <a href={`/blog/${post.slug}/`}>
+          <a href={`/blog/${post.data.handle}/`}>
             <h2>{post.data.title}</h2>
           </a>
           <p class="meta">
