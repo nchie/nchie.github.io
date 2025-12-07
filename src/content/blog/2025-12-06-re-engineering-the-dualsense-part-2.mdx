@@ -103,4 +103,4 @@ After this we see repeating reads similar to this one to get the gyro data:
 READ 14 byte(s) - TEMP_DATA1 (0x09): [0xFE 0xA7 0x06 0xEF 0x05 0xB6 0xE2 0x37 0xFF 0xE8 0xFF 0xE7 0x00 0x07] - TEMP_DATA: ≈ 22.30 °C; ACCEL: X=+1775 (+0.217 g, +2.125 m/s²), Y=+1462 (+0.178 g, +1.750 m/s²), Z=-7625 (-0.931 g, -9.128 m/s²); GYRO: X=-24 (-1.463 °/s), Y=-25 (-1.524 °/s), Z=+7 (+0.427 °/s)
 ```
 
-Initially this happens at quite irregular intervals, anywhere from 167ns to 812ns (though most around 400-650ns) between reads which is likely due to the MCU also handling other things early on, but after a while it stabilizes at 625ns which matches the 1.6kHz setting we saw during the initialization.
+Initially this happens at quite irregular intervals, anywhere from 167µs to 812µs (though most around 400-650µs) between reads which is likely due to the MCU also handling other things early on, but after a while it stabilizes at 625µs which matches the 1.6kHz setting we saw during the initialization.
