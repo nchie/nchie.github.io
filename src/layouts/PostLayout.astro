@@ -4,6 +4,7 @@ import Giscus from "../components/Giscus.astro";
 
 type Frontmatter = {
   title: string;
+  windowTitle?: string;
   subtitle?: string;
   summary?: string;
   pubDate: Date;
@@ -13,11 +14,12 @@ type Frontmatter = {
 };
 
 const { frontmatter } = Astro.props as { frontmatter: Frontmatter };
+const pageTitle = frontmatter.windowTitle || frontmatter.title;
 const formatter = new Intl.DateTimeFormat("en", { dateStyle: "long" });
 ---
 
 <Base
-  title={frontmatter.title}
+  title={pageTitle}
   description={frontmatter.summary || frontmatter.subtitle}
   type="article"
 >

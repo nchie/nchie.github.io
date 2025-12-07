@@ -3,6 +3,7 @@ import { defineCollection, z } from "astro:content";
 const blog = defineCollection({
   type: "content",
   schema: z.object({
+    windowTitle: z.string().optional(),
     title: z.string(),
     subtitle: z.string().optional(),
     summary: z.string().optional(),
