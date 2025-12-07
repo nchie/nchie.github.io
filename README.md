@@ -9,6 +9,7 @@ This repository hosts a Jekyll-powered personal site with an About landing page 
 - `_layouts/`, `_includes/` — Templates and shared chrome.
 - `assets/css/style.css` — Site styles.
 - `_config.yml` — Site settings (`url`, `baseurl`, metadata, plugins).
+- `images` — Static images served
 
 ## Local setup
 1) Install Ruby (matching the version in the GitHub Actions workflow, 3.1).
