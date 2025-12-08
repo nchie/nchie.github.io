@@ -7,8 +7,7 @@ Static site built with Astro, Preact integration, and MDX content. Posts live in
 - `src/pages/` — Routes (`/`, `/blog`, `/blog/[slug]`).
 - `src/layouts/` — Base, page, and post layouts.
 - `src/content/blog/` — MDX posts with frontmatter (includes `unlisted` + `comments` flags).
-- `src/styles/tailwind.css` — Tailwind + DaisyUI styles.
-- `src/components/mdx/MDXComponents.tsx` — Markdown/MDX element mapping for consistent styling.
+- `src/styles/tailwind.css` — Tailwind + DaisyUI styles (includes `mdx-content` typography layer for posts).
 - `public/` — Static assets and JS (`/images`, `/scripts`).
 - `src/config/site.ts` — Site metadata + Giscus config.
 
