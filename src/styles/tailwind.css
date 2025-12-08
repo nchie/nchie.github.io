@@ -1,6 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "./src/**/*.{astro,html,md,mdx,ts,tsx,js,jsx}";
+@source "./public/**/*.{html,js}";
+
+@plugin "daisyui/theme" {
+  name: "blog";
+  default: true;
+  color-scheme: light;
+  --color-primary: #2c5f63;
+  --color-primary-content: #eaf4f3;
+  --color-secondary: #c38b5f;
+  --color-secondary-content: #25160c;
+  --color-accent: #4b7094;
+  --color-accent-content: #0b1724;
+  --color-neutral: #1f2429;
+  --color-neutral-content: #f4f1ea;
+  --color-base-100: #f6f3ec;
+  --color-base-200: #ece6dd;
+  --color-base-300: #d9cec2;
+  --color-base-content: #1f2527;
+  --color-info: #4ea3c8;
+  --color-info-content: #08141b;
+  --color-success: #4f9b6b;
+  --color-success-content: #08140e;
+  --color-warning: #c48a32;
+  --color-warning-content: #231405;
+  --color-error: #c45b5b;
+  --color-error-content: #230c0c;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui" {
+  themes: false;
+}
+
+@theme {
+  --font-sans: "Work Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+}
 
 @layer base {
   :root {
