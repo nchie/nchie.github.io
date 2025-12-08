@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import PostLayout from "../../layouts/PostLayout.astro";
+import mdxComponents from "../../components/mdx/MDXComponents";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -15,5 +16,5 @@ const { Content } = await post.render();
 ---
 
 <PostLayout frontmatter={post.data}>
-  <Content />
+  <Content components={mdxComponents} />
 </PostLayout>

@@ -23,18 +23,31 @@ const formatter = new Intl.DateTimeFormat("en", { dateStyle: "long" });
   description={frontmatter.summary || frontmatter.subtitle}
   type="article"
 >
-  <article class="post">
-    <div class="container narrow">
-      <p class="post-meta">
-        <span>{formatter.format(frontmatter.pubDate)}</span>
-        {frontmatter.unlisted && <span class="pill">Unlisted</span>}
-      </p>
-      <h1 class="post-title">{frontmatter.title}</h1>
-      {frontmatter.subtitle && <p class="post-subtitle">{frontmatter.subtitle}</p>}
-      <div class="post-body">
+  <article class="py-10 md:py-14">
+    <div class="mx-auto flex max-w-4xl flex-col gap-5 px-4">
+      <div class="flex flex-wrap items-center gap-3 text-sm font-semibold text-base-content/70">
+        <span class="inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3 py-1 shadow-sm">
+          <span class="text-primary">●</span>
+          {formatter.format(frontmatter.pubDate)}
+        </span>
+        {frontmatter.unlisted && <span class="badge badge-outline badge-primary">Unlisted</span>}
+      </div>
+      <h1 class="font-serif text-4xl font-semibold leading-tight text-base-content md:text-5xl">
+        {frontmatter.title}
+      </h1>
+      {frontmatter.subtitle && (
+        <p class="text-xl text-base-content/80 md:text-2xl">
+          {frontmatter.subtitle}
+        </p>
+      )}
+      <div class="mt-2 space-y-6 text-lg leading-8 text-base-content/85">
         <slot />
       </div>
-      {frontmatter.comments !== false && <Giscus />}
+      {frontmatter.comments !== false && (
+        <div class="mt-6 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
+          <Giscus />
+        </div>
+      )}
     </div>
   </article>
 </Base>

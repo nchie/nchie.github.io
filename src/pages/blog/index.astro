@@ -9,19 +9,21 @@ const posts = (await getCollection("blog", ({ data }) => !data.unlisted)).sort(
 
 <PageLayout title="Blog">
   {posts.length === 0 ? (
-    <p>No posts yet. Stay tuned!</p>
+    <p class="text-base-content/70">No posts yet. Stay tuned!</p>
   ) : (
-    <div class="posts">
+    <div class="grid gap-4">
       {posts.map((post) => (
-        <article class="post-card">
-          <a href={`/blog/${post.data.handle}/`}>
-            <h2>{post.data.title}</h2>
+        <article class="group rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <a href={`/blog/${post.data.handle}/`} class="flex flex-col gap-2">
+            <h2 class="text-xl font-semibold text-base-content group-hover:text-primary">
+              {post.data.title}
+            </h2>
           </a>
-          <p class="meta">
+          <p class="text-sm font-semibold text-base-content/60">
             {new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(post.data.pubDate)}
           </p>
-          {post.data.subtitle && <p class="small">{post.data.subtitle}</p>}
-          {post.data.summary && <p>{post.data.summary}</p>}
+          {post.data.subtitle && <p class="text-base-content/70">{post.data.subtitle}</p>}
+          {post.data.summary && <p class="text-base-content/80">{post.data.summary}</p>}
         </article>
       ))}
     </div>

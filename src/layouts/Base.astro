@@ -1,5 +1,5 @@
 ---
-import "../styles/global.css";
+import "../styles/tailwind.css";
 import { site } from "../config/site";
 
 type Props = {
@@ -18,7 +18,7 @@ const canonicalUrl = canonical || Astro.url.href;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="blog">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,34 +41,49 @@ const canonicalUrl = canonical || Astro.url.href;
       rel="stylesheet"
     />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <a class="site-title" href="/">{site.title}</a>
-        <nav class="nav">
-          <a href="/" class={pathname === "/" ? "active" : ""}>About</a>
-          <a href="/blog/" class={pathname.startsWith("/blog") ? "active" : ""}>Blog</a>
-        </nav>
-      </div>
-    </header>
-
-    <main class="site-content">
-      <slot />
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <div>
-          <strong>{site.title}</strong>
-          <p class="small">{site.description}</p>
+  <body class="min-h-screen bg-base-200 font-sans text-base-content antialiased">
+    <div class="flex min-h-screen flex-col">
+      <header class="sticky top-0 z-20 border-b border-base-300 bg-base-100/90 backdrop-blur">
+        <div class="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
+          <a class="text-lg font-semibold tracking-tight text-primary" href="/">
+            {site.title}
+          </a>
+          <nav class="flex items-center gap-2 text-sm font-semibold">
+            <a
+              href="/"
+              class={`btn btn-ghost btn-sm ${pathname === "/" ? "btn-active text-primary" : "text-base-content/80"}`}
+              aria-current={pathname === "/" ? "page" : undefined}
+            >
+              About
+            </a>
+            <a
+              href="/blog/"
+              class={`btn btn-ghost btn-sm ${pathname.startsWith("/blog") ? "btn-active text-primary" : "text-base-content/80"}`}
+              aria-current={pathname.startsWith("/blog") ? "page" : undefined}
+            >
+              Blog
+            </a>
+          </nav>
         </div>
-        <div class="footer-links">
-          <a href={`mailto:${site.email}`}>Email</a>
-          <a href={site.github} target="_blank" rel="noopener">GitHub</a>
-          <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a>
-        </div>
-      </div>
-    </footer>
+      </header>
 
+      <main class="flex-1">
+        <slot />
+      </main>
+
+      <footer class="mt-10 border-t border-base-300 bg-base-100/80">
+        <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-6">
+          <div>
+            <p class="text-lg font-semibold">{site.title}</p>
+            <p class="text-sm text-base-content/70">{site.description}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 text-sm">
+            <a class="link link-primary" href={`mailto:${site.email}`}>Email</a>
+            <a class="link link-primary" href={site.github} target="_blank" rel="noopener">GitHub</a>
+            <a class="link link-primary" href={site.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

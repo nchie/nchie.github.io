@@ -9,9 +9,10 @@ const enabled =
 ---
 
 {enabled ? (
-  <section class="comments">
+  <section class="space-y-3">
     <script
       src="https://giscus.app/client.js"
+      is:inline
       data-repo={giscus.repo}
       data-repo-id={giscus.repoId}
       data-category={giscus.category}
@@ -27,5 +28,5 @@ const enabled =
     ></script>
   </section>
 ) : (
-  <p class="small">Comments are not configured yet.</p>
+  <p class="text-sm text-base-content/70">Comments are not configured yet.</p>
 )}

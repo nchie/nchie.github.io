@@ -63,22 +63,21 @@ export function LightboxImage({ src, alt, caption, width }: LightboxImageProps) 
   const close = () => setOpen(false);
 
   return (
-    <figure>
+    <figure class="my-6 space-y-3">
       <img
         src={src}
         alt={alt}
         width={width}
         onClick={() => setOpen(true)}
-        style="cursor: zoom-in;"
+        class="w-full cursor-zoom-in rounded-xl border border-base-300 object-contain shadow-md transition hover:-translate-y-0.5"
         loading="lazy"
       />
-      {caption && <figcaption>{caption}</figcaption>}
+      {caption && <figcaption class="text-center text-sm text-base-content/70">{caption}</figcaption>}
 
       {open && (
-        <div class="lightbox-overlay open" onClick={close}>
-          <div class="lightbox-backdrop" />
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={close}>
           <div
-            class="lightbox-frame"
+            class="relative z-10 max-h-[90vh] max-w-5xl overflow-hidden rounded-2xl border border-base-300 bg-base-100 p-4 shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-label={caption || alt}
@@ -87,12 +86,18 @@ export function LightboxImage({ src, alt, caption, width }: LightboxImageProps) 
             tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
           >
-            <button class="lightbox-close" aria-label="Close" type="button" onClick={close} ref={closeButtonRef}>
+            <button
+              class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2 border border-base-300"
+              aria-label="Close"
+              type="button"
+              onClick={close}
+              ref={closeButtonRef}
+            >
               ×
             </button>
-            <img src={src} alt={alt} />
+            <img class="max-h-[70vh] w-full rounded-xl object-contain" src={src} alt={alt} />
             {caption && (
-              <p id={captionIdRef.current} class="lightbox-caption">
+              <p id={captionIdRef.current} class="mt-2 text-center text-sm text-base-content/70">
                 {caption}
               </p>
             )}

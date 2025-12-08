@@ -4,7 +4,7 @@
 - Astro + Preact + MDX site. Key entry: `astro.config.mjs` and `tsconfig.json` (strict TypeScript, `jsxImportSource` set to Preact).
 - Routes in `src/pages/`; shared wrappers in `src/layouts/`; reusable UI in `src/components/`.
 - Content lives under `src/content/blog/` (`YYYY-MM-DD-slug.mdx`); assets and helper scripts live in `public/`.
-- Global styling in `src/styles/global.css`; site metadata and Giscus settings in `src/config/site.ts`.
+- Styling via Tailwind + DaisyUI (`src/styles/tailwind.css`) and MDX element mapping; site metadata and Giscus settings in `src/config/site.ts`.
 
 ## Build, Test, and Development Commands
 - `npm install` — install dependencies (Node 20+).
