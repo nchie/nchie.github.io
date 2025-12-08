@@ -46,11 +46,11 @@ const mdxComponents: MDXComponents = {
   },
   ul: (props: ElementProps<"ul">) => {
     const { rest, className } = extractClass(props);
-    return <ul {...rest} className={cx(baseText, "my-4 list-disc space-y-3 pl-6", className)} />;
+    return <ul {...rest} className={cx(baseText, "mb-1 list-disc pl-6", className)} />;
   },
   ol: (props: ElementProps<"ol">) => {
     const { rest, className } = extractClass(props);
-    return <ol {...rest} className={cx(baseText, "my-4 list-decimal space-y-3 pl-6", className)} />;
+    return <ol {...rest} className={cx(baseText, "my-1 list-decimal space-y-3 pl-6", className)} />;
   },
   li: (props: ElementProps<"li">) => {
     const { rest, className } = extractClass(props);
