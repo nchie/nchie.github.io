@@ -1,0 +1,51 @@
+---
+import { Picture, Image } from "astro:assets";
+
+type ImageSide = {
+  src: ImageMetadata;
+  alt: string;
+};
+
+type Props = {
+  before: ImageSide;
+  after: ImageSide;
+  caption?: string;
+  widths?: number[];
+  className?: string;
+  initial?: number;
+};
+
+const {
+  before,
+  after,
+  caption,
+  widths = [640, 960, 1280, 1600],
+} = Astro.props as Props;
+
+const idBase = `diff-${Math.random().toString(36).slice(2)}`;
+---
+
+<figure class="aspect-video" tabindex="0">
+  <div class="diff aspect-video">
+    <div class="diff-item-1" role="img" tabindex="0">
+      <Image
+        src={before.src}
+        alt={before.alt}
+        widths={widths}
+        format={"webp"}
+      />
+    </div>
+
+    <div class="diff-item-2" role="img">
+      <Image src={after.src} alt={after.alt} widths={widths} format={"webp"} />
+    </div>
+    <div class="diff-resizer"></div>
+  </div>
+  {
+    caption && (
+      <figcaption class="text-center text-sm text-base-content/70">
+        {caption}
+      </figcaption>
+    )
+  }
+</figure>
