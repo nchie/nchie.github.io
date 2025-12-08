@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import type { JSX } from "preact";
+import ResponsiveImage from "../ResponsiveImage.astro";
 
 const cx = (...classes: Array<string | undefined | null | false>) => classes.filter(Boolean).join(" ");
 
@@ -116,13 +117,7 @@ const mdxComponents: MDXComponents = {
   },
   img: (props: ElementProps<"img">) => {
     const { rest, className } = extractClass(props);
-    return (
-      <img
-        loading="lazy"
-        {...rest}
-        className={cx("mx-auto h-auto w-full max-w-5xl rounded-xl border border-base-300 object-contain", className)}
-      />
-    );
+    return <ResponsiveImage {...rest} className={cx("mx-auto h-auto w-full max-w-5xl rounded-xl border border-base-300 object-contain", className)} />;
   },
   figcaption: (props: ElementProps<"figcaption">) => {
     const { rest, className } = extractClass(props);

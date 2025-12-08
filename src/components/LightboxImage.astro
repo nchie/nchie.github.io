@@ -1,0 +1,97 @@
+---
+import { Picture } from "astro:assets";
+import LightboxImageController from "./LightboxImage.tsx";
+
+type LightboxImageProps = {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  widths?: number[];
+  modalWidths?: number[];
+};
+
+const {
+  src,
+  alt,
+  caption,
+  widths = [640, 960, 1280, 1600],
+  modalWidths = [960, 1280, 1600, 2048],
+} = Astro.props as LightboxImageProps;
+
+const idBase = `lightbox-${Math.random().toString(36).slice(2)}`;
+const captionId = caption ? `${idBase}-caption` : undefined;
+const overlayId = `${idBase}-overlay`;
+const frameId = `${idBase}-frame`;
+const triggerId = `${idBase}-trigger`;
+const closeId = `${idBase}-close`;
+---
+
+<figure class="my-6 space-y-3" data-lightbox-root={idBase}>
+  <button
+    id={triggerId}
+    type="button"
+    aria-haspopup="dialog"
+    aria-controls={overlayId}
+    class="block w-full text-left focus:outline-none focus:ring focus:ring-primary"
+    data-lightbox-trigger
+  >
+    <Picture
+      src={src}
+      alt={alt}
+      widths={widths}
+      formats={["webp"]}
+      fallbackFormat={src.format}
+      loading="lazy"
+      pictureAttributes={{ class: "block" }}
+      class="w-full cursor-zoom-in rounded-xl border border-base-300 object-contain shadow-md transition hover:-translate-y-0.5"
+    />
+  </button>
+
+  {caption && <figcaption class="text-center text-sm text-base-content/70">{caption}</figcaption>}
+
+  <div
+    id={overlayId}
+    role="dialog"
+    aria-modal="true"
+    aria-label={caption || alt}
+    aria-describedby={captionId}
+    aria-hidden="true"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-4"
+    data-lightbox-overlay
+  >
+    <div
+      id={frameId}
+      class="relative max-h-[90vh] max-w-5xl overflow-hidden rounded-2xl border border-base-300 bg-base-100 p-4 shadow-2xl outline-none"
+      data-lightbox-frame
+    >
+      <button
+        id={closeId}
+        class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2 border border-base-300"
+        aria-label="Close"
+        type="button"
+        data-lightbox-close
+      >
+        ×
+      </button>
+
+      <Picture
+        src={src}
+        alt={alt}
+        widths={modalWidths}
+        formats={["webp"]}
+        fallbackFormat={src.format}
+        loading="lazy"
+        pictureAttributes={{ class: "block" }}
+        class="max-h-[70vh] w-full rounded-xl object-contain"
+      />
+
+      {caption && (
+        <p id={captionId} class="mt-2 text-center text-sm text-base-content/70">
+          {caption}
+        </p>
+      )}
+    </div>
+  </div>
+
+  <LightboxImageController client:load idBase={idBase} />
+</figure>

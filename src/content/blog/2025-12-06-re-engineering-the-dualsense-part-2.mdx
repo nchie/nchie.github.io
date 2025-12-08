@@ -9,7 +9,12 @@ summary: ""
 comments: true
 ---
 
-import { LightboxImage } from "../../components/LightboxImage.tsx";
+import LightboxImage from "../../components/LightboxImage.astro";
+import analyzingBDM050 from "../../assets/blog/analyzing-BDM-050.jpeg";
+import saleaeLogic from "../../assets/blog/Saleae-Logic-2-HLA.png";
+import solderedBDM020 from "../../assets/blog/soldered-BDM-020.jpeg";
+import solderedBDM050 from "../../assets/blog/soldered-BDM-050.jpeg";
+import whoAmI from "../../assets/blog/WHO_AM_I.png";
 
 In the last post I went through the idea I've had, some basic investigation, and a shopping list of things which I ordered to be able to take it further. In this post I will be going through soldering, analyzing the communication between the DualSense MCU and its IMU, as well as a plan on how we can design a mod around it.
 
@@ -18,8 +23,7 @@ In the last post I went through the idea I've had, some basic investigation, and
 As I mentioned previously, my soldering experience is almost non-existent and in the past I've ended up bricking things. This time I wanted to learn it properly so took some time to practice soldering components onto SMD practice boards. After getting the basics down I ended up buying a cheap malfunctioning (stick drift) controller to practice on (revision 2, BDM-020), and to my surprise I found it much easier than I had imagined to solder thin wires to (random) test pads. While at it I decided I wanted to continue on the BDM-020 a little bit more, but the BDM-020 doesn't have any obvious test pads for the IMU, so I scraped some vias hoping to find pads which had continuity to the IMU. Sadly could not find any, and therefore I ended up soldering wires to the vias instead to analyze the communication between the MCU and IMU.
 
 <LightboxImage
-  client:load
-  src="/images/soldered-BDM-020.jpeg"
+  src={solderedBDM020}
   alt="Soldered to vias for the InvenSense ICM-40608's traces on a DualSense BDM-020"
 />
 
@@ -30,15 +34,13 @@ I won't go into much detail regarding the BDM-020 but I will say that it's very 
 Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some Kapton tape on top of it to make it a little bit more durable.
 
 <LightboxImage
-  client:load
-  src="/images/soldered-BDM-050.jpeg"
+  src={solderedBDM050}
   alt="Soldered to test pads for the InvenSense ICM-42607-P on a DualSense BDM-050"
 />
 
 ### Analyzing
 <LightboxImage
-  client:load
-  src="/images/analyzing-BDM-050.jpeg"
+  src={analyzingBDM050}
   alt="Using Saleae Logic 2 to analyze the communication between the DualSense BDM-050's MCU and its InvenSense ICM-42607-P IMU"
 />
 
@@ -54,8 +56,7 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
   - Since I know that the response to WHO_AM_I should be 0x60 from the datasheet, I set up an SPI analyzer in Logic 2, tried both settings, and found CPHA=1 to be the one which gave 0x60 on the MISO, meaning it's sampling on trailing edges.
 
 <LightboxImage
-  client:load
-  src="/images/WHO_AM_I.png"
+  src={whoAmI}
   alt="Capturing WHO_AM_I in Saleae Logic 2"
   caption="The very first command is 0xF5, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. 0xF5 therefore means 'read 0x75 (WHO_AM_I)', to which it gets the expected 0x60 back."
 />
@@ -63,8 +64,7 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
 CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
 
 <LightboxImage
-  client:load
-  src="/images/Saleae-Logic-2-HLA.png"
+  src={saleaeLogic}
   alt="Saleae Logic 2 with custom high-level analyzer for the ICM-42607-P IMU"
   caption="The LLM-generated extension made it much easier to understand what's happening"
 />

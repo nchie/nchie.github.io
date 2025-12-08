@@ -1,0 +1,34 @@
+---
+import { getImage } from "astro:assets";
+
+const {
+  src,
+  alt = "",
+  className = "",
+  sizes = "(min-width: 1200px) 1200px, 100vw",
+  widths = [400, 800, 1200],
+  loading = "lazy",
+} = Astro.props;
+
+const webp = await getImage({ src, widths, format: "webp" });
+const png = await getImage({ src, widths, format: "png" });
+const jpeg = await getImage({ src, widths, format: "jpeg" });
+
+const { width, height } = jpeg.attributes;
+---
+
+<picture class={className}>
+  <source srcset={webp.srcSet.attribute} sizes={sizes} type="image/webp" />
+  <source srcset={png.srcSet.attribute} sizes={sizes} type="image/png" />
+  <img
+    src={jpeg.src}
+    srcset={jpeg.srcSet.attribute}
+    sizes={sizes}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    alt={alt}
+    class={`w-full ${className}`}
+  />
+</picture>
