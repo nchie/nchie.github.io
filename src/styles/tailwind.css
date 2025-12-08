@@ -3,7 +3,7 @@
 @source "./src/**/*.{astro,html,md,mdx,ts,tsx,js,jsx}";
 @source "./public/**/*.{html,js}";
 
-@plugin "daisyui/theme" {
+/* @plugin "daisyui/theme" {
   name: "blog";
   default: true;
   color-scheme: light;
@@ -35,10 +35,10 @@
   --border: 1px;
   --depth: 1;
   --noise: 0;
-}
+} */
 
 @plugin "daisyui" {
-  themes: false;
+  themes: all;
 }
 
 @theme {
@@ -48,6 +48,6 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: lofi;
   }
 }

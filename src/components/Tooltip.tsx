@@ -30,7 +30,7 @@ export function Tooltip({ text, children, position = "bottom", tone = "primary" 
   return (
     <span class={`tooltip ${positionClass[position]} ${toneClass[tone]} inline-flex`} tabIndex={0} aria-label={text}>
       <span className="tooltip-content">{text}</span>
-      <span className="cursor-help rounded-lg border border-base-300 bg-base-100 px-2 py-1 text-sm font-semibold text-primary shadow-sm transition hover:-translate-y-0.5">
+      <span className="cursor-help text-primary underline decoration-dashed underline-offset-4 transition-colors hover:text-primary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40">
         {children}
       </span>
     </span>
