@@ -13,20 +13,20 @@ const extractClass = <T extends keyof JSX.IntrinsicElements>(props: ElementProps
   return { rest, className: className || classAttr };
 };
 
-const baseText = "text-lg leading-8 text-base-content/85";
+const baseText = "text-base leading-7 text-base-content/85";
 
 const mdxComponents: MDXComponents = {
   h1: (props: ElementProps<"h1">) => {
     const { rest, className } = extractClass(props);
-    return <h1 {...rest} className={cx("font-serif text-4xl font-semibold text-base-content md:text-5xl", className)} />;
+    return <h1 {...rest} className={cx("font-sans text-3xl font-semibold text-base-content md:text-4xl", className)} />;
   },
   h2: (props: ElementProps<"h2">) => {
     const { rest, className } = extractClass(props);
-    return <h2 {...rest} className={cx("mt-10 font-serif text-3xl font-semibold text-base-content md:text-4xl", className)} />;
+    return <h2 {...rest} className={cx("mt-10 font-sans text-2xl font-semibold text-base-content md:text-3xl", className)} />;
   },
   h3: (props: ElementProps<"h3">) => {
     const { rest, className } = extractClass(props);
-    return <h3 {...rest} className={cx("mt-8 text-2xl font-semibold text-base-content", className)} />;
+    return <h3 {...rest} className={cx("mt-8 text-xl font-semibold text-base-content", className)} />;
   },
   p: (props: ElementProps<"p">) => {
     const { rest, className } = extractClass(props);
@@ -54,7 +54,7 @@ const mdxComponents: MDXComponents = {
   },
   li: (props: ElementProps<"li">) => {
     const { rest, className } = extractClass(props);
-    return <li {...rest} className={cx("leading-7 text-base-content/90", className)} />;
+    return <li {...rest} className={cx("leading-6 text-base-content/90", className)} />;
   },
   blockquote: (props: ElementProps<"blockquote">) => {
     const { rest, className } = extractClass(props);
@@ -75,7 +75,7 @@ const mdxComponents: MDXComponents = {
       <code
         {...rest}
         className={cx(
-          "rounded-md border border-base-300 bg-base-200 px-2 py-1 text-sm font-mono text-primary",
+          "rounded-md px-2 py-1 text-sm font-mono text-primary-content",
           className,
         )}
       />
