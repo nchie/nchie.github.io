@@ -1,5 +1,6 @@
 ---
 import LightboxImageComponent from "./LightboxImage.tsx";
+import { getImage } from "astro:assets";
 
 export type LightboxImageProps = {
   src: ImageMetadata;
@@ -23,6 +24,14 @@ const {
   zoomLevel = 2,
 } = Astro.props as LightboxImageProps;
 
+const maxModalWidth = modalWidths && modalWidths.length > 0 ? Math.max(...modalWidths) : src.width;
+const targetWidth = Math.min(4096, Math.max(src.width, Math.ceil(maxModalWidth * zoomLevel)));
+const fullImage = await getImage({
+  src,
+  width: targetWidth,
+  format: src.format,
+});
+
 const props = {
   src,
   alt,
@@ -32,6 +41,9 @@ const props = {
   priority,
   zoomable,
   zoomLevel,
+  fullSrc: fullImage.src,
+  fullWidth: fullImage.attributes.width,
+  fullHeight: fullImage.attributes.height,
 };
 ---
 

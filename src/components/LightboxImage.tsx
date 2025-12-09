@@ -11,6 +11,9 @@ type Props = {
   zoomable?: boolean;
   zoomLevel?: number;
   idBase?: string;
+  fullSrc?: string;
+  fullWidth?: number;
+  fullHeight?: number;
 };
 
 type Phase = "closed" | "opening" | "open" | "closing";
@@ -28,6 +31,9 @@ export default function LightboxImage({
   zoomable = true,
   zoomLevel = 2,
   idBase: providedId,
+  fullSrc,
+  fullWidth,
+  fullHeight,
 }: Props) {
   const idBase = providedId ?? useId().replace(/[:]/g, "");
   const captionId = caption ? `${idBase}-caption` : undefined;
@@ -309,15 +315,6 @@ export default function LightboxImage({
             onTouchEnd={endTouch}
             onTouchCancel={endTouch}
             onContextMenu={preventContextMenu}
-            style={
-              zoomable && zoomActive
-                ? {
-                    ["--zoom-origin-x" as string]: `${zoomOrigin.x}%`,
-                    ["--zoom-origin-y" as string]: `${zoomOrigin.y}%`,
-                    ["--zoom-scale" as string]: String(zoomLevel),
-                  }
-                : undefined
-            }
           >
             {zoomable && (
               <span
@@ -330,25 +327,41 @@ export default function LightboxImage({
             )}
 
             <img
-              src={src.src}
+              src={fullSrc ?? src.src}
               alt={alt}
-              width={src.width}
-              height={src.height}
+              width={fullWidth ?? src.width}
+              height={fullHeight ?? src.height}
               loading="lazy"
               decoding="async"
               data-zoom-image
               ref={modalImageRef}
               onLoad={handleImageLoad}
               onContextMenu={preventContextMenu}
-              class={`max-h-[82vh] w-full select-none rounded-xl object-contain ${zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""}`}
+              class={`select-none rounded-xl ${
+                zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""
+              }`}
               style={
-                zoomable
+                zoomable && zoomActive
                   ? {
-                      transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                      transform: zoomActive ? `scale(${zoomLevel})` : "scale(1)",
+                      width: `${zoomLevel * 100}%`,
+                      maxWidth: "none",
+                      height: "auto",
+                      maxHeight: "none",
+                      transform: `translate(${((50 - zoomOrigin.x) * (zoomLevel - 1)) / zoomLevel}%, ${(
+                        (50 - zoomOrigin.y) *
+                        (zoomLevel - 1)
+                      ) / zoomLevel}%)`,
+                      objectFit: "contain",
                       WebkitTouchCallout: "none",
                     }
-                  : { WebkitTouchCallout: "none" }
+                  : {
+                      width: "100%",
+                      maxWidth: "100%",
+                      height: "auto",
+                      maxHeight: "82vh",
+                      objectFit: "contain",
+                      WebkitTouchCallout: "none",
+                    }
               }
               draggable={false}
             />

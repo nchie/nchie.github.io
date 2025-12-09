@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "dev-hosted": "astro dev --host",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
