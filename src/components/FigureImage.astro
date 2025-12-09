@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+
+type WidthOption = "xs" | "sm" | "md" | "lg" | "xl" | "full";
+
+type Props = {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  widths?: number[];
+  width?: WidthOption;
+};
+
+const {
+  src,
+  alt,
+  caption,
+  widths = [640, 960, 1280, 1600],
+  width = "md",
+} = Astro.props as Props;
+
+const widthClassMap: Record<WidthOption, string> = {
+  xs: "max-w-xs",
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  full: "max-w-none",
+};
+
+const widthClass = widthClassMap[width] ?? widthClassMap.md;
+---
+
+<figure class={`mx-auto w-full space-y-3 ${widthClass}`} data-width={width}>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    format="webp"
+    loading="lazy"
+    class="h-auto w-full rounded-xl border border-base-300 object-contain"
+  />
+
+  {caption && (
+    <figcaption class="mx-auto max-w-2xl text-center text-sm text-base-content/70">
+      {caption}
+    </figcaption>
+  )}
+</figure>

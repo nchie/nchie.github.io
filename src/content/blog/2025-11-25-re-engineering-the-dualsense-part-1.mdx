@@ -9,10 +9,12 @@ summary: ""
 comments: true
 ---
 
-import { Tooltip } from "../../components/Tooltip.tsx";
+import Tooltip from "../../components/Tooltip.astro";
 import DiffImage from "../../components/DiffImage.astro";
+import FigureImage from "../../components/FigureImage.astro";
 import bdm050SideB from "../../assets/blog/bdm-050-side-b.png";
 import bdm050SideA from "../../assets/blog/bdm-050-side-a.png";
+import icmPinout from "../../assets/icm-42607-p-pinout.png";
 
 I first got into embedded systems before university many years ago, experimenting with microcontrollers and small hardware projects. It never developed into anything serious at the time because I didn't have any compelling problems to pursue, so the interest faded into the background. The following decade life happened and I also slowly shifted from being a dedicated PC gamer (I put too many hours into Counter-Strike) to being more of a casual player preferring to game from the couch. I never liked using controllers for FPS games, so naturally I didn't play them as much anymore.
 
@@ -44,15 +46,15 @@ To start off I was able to find a [clear picture from a post on Reddit](https://
 
 By cross-referencing the 4th revision's pins, traces and test pads to the TDK InvenSense ICM-42607-P pinout from its [datasheet](https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589785219927736320), it looks like the test pads are coming from the following 4 pins:
 
-<figure>
-  <img 
-    src="https://github.com/user-attachments/assets/fb54a58f-8b37-446f-bffd-d687cba61379" 
-    alt="ICM-42607-P-pinout" 
-  />
-  <figcaption>Pinout of the TDK InvenSense ICM-42607-P</figcaption>
-</figure>
+<FigureImage
+  src={icmPinout}
+  alt="Pinout diagram for the ICM-42607-P"
+  caption="Pinout of the TDK InvenSense ICM-42607-P"
+  width="sm"
+  widths={[640, 960, 1280, 1600]}
+/>
 
-By reading more from the datasheet, we can see that it supports the I2C, I3C and SPI protocols. Looking at the various pinout configurations, we can see that to use the [I2C protocol](https://en.wikipedia.org/wiki/I2C) you're supposed to connect <Tooltip client:load text="Supply voltage that sets the logic level for the I/O pins.">VDDIO</Tooltip> to the pin 12, and it seems unlikely that they'd place a test pad for VDDIO which points to it _not_ being I2C. Another thing which I2C requires is pull-up resistors on pin 13 (SCL) and 14 (SDA), which I do not see either. Going by this it's fairly safe to assume they are using [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface) since I3C is not very commonly used, but we'll verify that later on in the series.
+By reading more from the datasheet, we can see that it supports the I2C, I3C and SPI protocols. Looking at the various pinout configurations, we can see that to use the [I2C protocol](https://en.wikipedia.org/wiki/I2C) you're supposed to connect <Tooltip text="Supply voltage that sets the logic level for the I/O pins.">VDDIO</Tooltip> to the pin 12, and it seems unlikely that they'd place a test pad for VDDIO which points to it _not_ being I2C. Another thing which I2C requires is pull-up resistors on pin 13 (SCL) and 14 (SDA), which I do not see either. Going by this it's fairly safe to assume they are using [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface) since I3C is not very commonly used, but we'll verify that later on in the series.
 
 ## Committing to the idea
 

@@ -60,15 +60,35 @@
   }
 
   .mdx-content figure {
-    @apply my-6 space-y-3;
+    @apply my-6 w-full max-w-3xl space-y-3 mx-auto;
+  }
+
+  .mdx-content figure[data-width="sm"] {
+    @apply max-w-2xl;
+  }
+
+  .mdx-content figure[data-width="md"] {
+    @apply max-w-3xl;
+  }
+
+  .mdx-content figure[data-width="lg"] {
+    @apply max-w-4xl;
+  }
+
+  .mdx-content figure[data-width="xl"] {
+    @apply max-w-5xl;
+  }
+
+  .mdx-content figure[data-width="full"] {
+    @apply max-w-none;
   }
 
   .mdx-content img {
-    @apply mx-auto h-auto w-full max-w-5xl rounded-xl border border-base-300 object-contain;
+    @apply mx-auto h-auto w-full max-w-3xl rounded-xl border border-base-300 object-contain;
   }
 
   .mdx-content figcaption {
-    @apply text-center text-sm text-base-content/70;
+    @apply mx-auto max-w-2xl text-center text-sm text-base-content/70;
   }
 
   .mdx-content table {
