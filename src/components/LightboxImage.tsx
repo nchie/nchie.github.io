@@ -272,17 +272,27 @@ export default function LightboxImage({
           ref={frameRef}
           tabIndex={-1}
         >
-          <button
-            id={closeId}
-            class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2 border border-base-300"
-            aria-label="Close"
-            type="button"
-            data-lightbox-close
-            onClick={close}
-            ref={closeRef}
-          >
-            ×
-          </button>
+          <div class="pointer-events-none absolute inset-x-0 top-0 flex justify-end gap-2 px-4 py-3">
+            {zoomable && (
+              <span
+                class="pointer-events-none inline-flex items-center gap-1 rounded-full bg-base-100/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-base-content/80 shadow-sm backdrop-blur"
+              >
+                <span aria-hidden="true">🔍</span>
+                Zoom
+              </span>
+            )}
+            <button
+              id={closeId}
+              class="btn btn-circle btn-ghost btn-sm border border-base-300 pointer-events-auto"
+              aria-label="Close"
+              type="button"
+              data-lightbox-close
+              onClick={close}
+              ref={closeRef}
+            >
+              ×
+            </button>
+          </div>
 
           <div
             data-lightbox-spinner
@@ -299,7 +309,7 @@ export default function LightboxImage({
             data-zoomable={zoomable ? "true" : "false"}
             data-zoom-state={zoomActive ? "active" : "idle"}
             data-zoom-level={zoomLevel}
-            class="group relative isolate flex max-h-[82vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none"
+            class="group relative isolate flex max-h-[82vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
             tabIndex={zoomable ? 0 : -1}
             role={zoomable ? "button" : undefined}
             aria-label={zoomable ? "Toggle zoom" : undefined}
@@ -316,16 +326,6 @@ export default function LightboxImage({
             onTouchCancel={endTouch}
             onContextMenu={preventContextMenu}
           >
-            {zoomable && (
-              <span
-                data-zoom-hint
-                class="pointer-events-none absolute right-2 top-2 flex items-center gap-1 rounded-full bg-base-100/85 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-base-content/70 shadow-sm backdrop-blur transition-opacity duration-200 group-data-[zoom-state=active]:opacity-0"
-              >
-                <span aria-hidden="true">🔍</span>
-                Zoom
-              </span>
-            )}
-
             <img
               src={fullSrc ?? src.src}
               alt={alt}
