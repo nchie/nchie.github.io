@@ -1,35 +1,23 @@
 ---
+import TooltipFloating from "./TooltipFloating";
+
 type TooltipProps = {
   text: string;
   position?: "top" | "bottom" | "left" | "right";
-  tone?: "primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error" | "neutral";
+  tone?:
+    | "primary"
+    | "secondary"
+    | "accent"
+    | "info"
+    | "success"
+    | "warning"
+    | "error"
+    | "neutral";
 };
 
-const { text, position = "bottom", tone = "primary" } = Astro.props as TooltipProps;
-
-// Use concrete class names so Tailwind/DaisyUI generate the variant CSS.
-const toneClass: Record<NonNullable<TooltipProps["tone"]>, string> = {
-  primary: "tooltip-primary",
-  secondary: "tooltip-secondary",
-  accent: "tooltip-accent",
-  info: "tooltip-info",
-  success: "tooltip-success",
-  warning: "tooltip-warning",
-  error: "tooltip-error",
-  neutral: "tooltip-neutral",
-};
-
-const positionClass: Record<NonNullable<TooltipProps["position"]>, string> = {
-  top: "tooltip-top",
-  bottom: "tooltip-bottom",
-  left: "tooltip-left",
-  right: "tooltip-right",
-};
+const props = Astro.props as TooltipProps;
 ---
 
-<span class={`tooltip ${positionClass[position]} ${toneClass[tone]} inline-flex`} tabindex={0} aria-label={text}>
-  <span class="tooltip-content">{text}</span>
-  <span class="cursor-help text-primary underline decoration-dashed underline-offset-4 transition-colors hover:text-primary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40">
-    <slot />
-  </span>
-</span>
+<TooltipFloating client:visible {...props}>
+  <slot />
+</TooltipFloating>
