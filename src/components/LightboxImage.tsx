@@ -1,4 +1,5 @@
 import type { ImageMetadata } from "astro";
+import type { ComponentChildren } from "preact";
 import { useEffect, useId, useRef, useState } from "preact/hooks";
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
   fullSrc?: string;
   fullWidth?: number;
   fullHeight?: number;
+  children?: ComponentChildren;
 };
 
 type Phase = "closed" | "opening" | "open" | "closing";
@@ -34,6 +36,7 @@ export default function LightboxImage({
   fullSrc,
   fullWidth,
   fullHeight,
+  children,
 }: Props) {
   const idBase = providedId ?? useId().replace(/[:]/g, "");
   const captionId = caption ? `${idBase}-caption` : undefined;
@@ -227,11 +230,12 @@ export default function LightboxImage({
         aria-controls={overlayId}
         aria-expanded={overlayVisible ? "true" : "false"}
         class="block w-full text-left focus:outline-none focus:ring focus:ring-primary"
-        data-lightbox-trigger
-        onClick={open}
-        ref={triggerRef}
-        onContextMenu={preventContextMenu}
-      >
+      data-lightbox-trigger
+      onClick={open}
+      ref={triggerRef}
+      onContextMenu={preventContextMenu}
+    >
+      {children ?? (
         <img
           src={src.src}
           alt={alt}
@@ -244,136 +248,139 @@ export default function LightboxImage({
           draggable={false}
           style={{ WebkitTouchCallout: "none" }}
         />
-      </button>
+      )}
+    </button>
 
       {caption && <figcaption class="text-center text-sm text-base-content/70">{caption}</figcaption>}
 
-      <div
-        id={overlayId}
-        role="dialog"
-        aria-modal="true"
-        aria-label={caption || alt}
-        aria-describedby={captionId}
-        aria-hidden={overlayVisible ? "false" : "true"}
-        data-state={overlayState}
-        class={`${overlayClasses} ${overlayStateClasses} ${overlayVisible ? "" : "hidden"}`}
-        data-lightbox-overlay
-        ref={overlayRef}
-        onClick={(event) => {
-          if (event.target === overlayRef.current) close();
-        }}
-      >
+      {overlayVisible && (
         <div
-          id={frameId}
-          data-state={frameState}
-          data-loaded={loaded ? "true" : "false"}
-          class={`${frameClasses} ${frameStateClasses}`}
-          data-lightbox-frame
-          ref={frameRef}
-          tabIndex={-1}
+          id={overlayId}
+          role="dialog"
+          aria-modal="true"
+          aria-label={caption || alt}
+          aria-describedby={captionId}
+          aria-hidden={overlayVisible ? "false" : "true"}
+          data-state={overlayState}
+          class={`${overlayClasses} ${overlayStateClasses}`}
+          data-lightbox-overlay
+          ref={overlayRef}
+          onClick={(event) => {
+            if (event.target === overlayRef.current) close();
+          }}
         >
-          <div class="pointer-events-none absolute inset-x-0 top-0 flex justify-end gap-2 px-4 py-3">
-            {zoomable && (
-              <span
-                class="pointer-events-none inline-flex items-center gap-1 rounded-full bg-base-100/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-base-content/80 shadow-sm backdrop-blur"
+          <div
+            id={frameId}
+            data-state={frameState}
+            data-loaded={loaded ? "true" : "false"}
+            class={`${frameClasses} ${frameStateClasses}`}
+            data-lightbox-frame
+            ref={frameRef}
+            tabIndex={-1}
+          >
+            <div class="pointer-events-none absolute inset-x-0 top-0 flex justify-end gap-2 px-4 py-3">
+              {zoomable && (
+                <span
+                  class="pointer-events-none inline-flex items-center gap-1 rounded-full bg-base-100/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-base-content/80 shadow-sm backdrop-blur"
+                >
+                  <span aria-hidden="true">🔍</span>
+                  Zoom
+                </span>
+              )}
+              <button
+                id={closeId}
+                class="btn btn-circle btn-ghost btn-sm border border-base-300 pointer-events-auto"
+                aria-label="Close"
+                type="button"
+                data-lightbox-close
+                onClick={close}
+                ref={closeRef}
               >
-                <span aria-hidden="true">🔍</span>
-                Zoom
-              </span>
-            )}
-            <button
-              id={closeId}
-              class="btn btn-circle btn-ghost btn-sm border border-base-300 pointer-events-auto"
-              aria-label="Close"
-              type="button"
-              data-lightbox-close
-              onClick={close}
-              ref={closeRef}
+                ×
+              </button>
+            </div>
+
+            <div
+              data-lightbox-spinner
+              class={`pointer-events-none absolute inset-0 grid place-items-center text-base-content/70 transition-opacity duration-200 ${loaded ? "opacity-0 invisible" : ""}`}
+              aria-live="polite"
+              aria-atomic="true"
             >
-              ×
-            </button>
-          </div>
+              <span class="loading loading-spinner loading-lg" aria-hidden="true"></span>
+              <span class="sr-only">Loading full-size image…</span>
+            </div>
 
-          <div
-            data-lightbox-spinner
-            class={`pointer-events-none absolute inset-0 grid place-items-center text-base-content/70 transition-opacity duration-200 ${loaded ? "opacity-0 invisible" : ""}`}
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <span class="loading loading-spinner loading-lg" aria-hidden="true"></span>
-            <span class="sr-only">Loading full-size image…</span>
-          </div>
-
-          <div
-            data-zoom-container
-            data-zoomable={zoomable ? "true" : "false"}
-            data-zoom-state={zoomActive ? "active" : "idle"}
-            data-zoom-level={zoomLevel}
-            class="group relative isolate flex max-h-[82vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
-            tabIndex={zoomable ? 0 : -1}
-            role={zoomable ? "button" : undefined}
-            aria-label={zoomable ? "Toggle zoom" : undefined}
-            aria-pressed={zoomable ? (zoomActive ? "true" : "false") : undefined}
-            data-zoom-target
-            ref={zoomContainerRef}
-            onMouseEnter={handleMouseEnter}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onKeyDown={handleZoomKeyDown}
-            onTouchStart={startLongPress}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={endTouch}
-            onTouchCancel={endTouch}
-            onContextMenu={preventContextMenu}
-          >
-            <img
-              src={fullSrc ?? src.src}
-              alt={alt}
-              width={fullWidth ?? src.width}
-              height={fullHeight ?? src.height}
-              loading="lazy"
-              decoding="async"
-              data-zoom-image
-              ref={modalImageRef}
-              onLoad={handleImageLoad}
+            <div
+              data-zoom-container
+              data-zoomable={zoomable ? "true" : "false"}
+              data-zoom-state={zoomActive ? "active" : "idle"}
+              data-zoom-level={zoomLevel}
+              class="group relative isolate flex max-h-[82vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
+              tabIndex={zoomable ? 0 : -1}
+              role={zoomable ? "button" : undefined}
+              aria-label={zoomable ? "Toggle zoom" : undefined}
+              aria-pressed={zoomable ? (zoomActive ? "true" : "false") : undefined}
+              data-zoom-target
+              ref={zoomContainerRef}
+              onMouseEnter={handleMouseEnter}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              onKeyDown={handleZoomKeyDown}
+              onTouchStart={startLongPress}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={endTouch}
+              onTouchCancel={endTouch}
               onContextMenu={preventContextMenu}
-              class={`select-none rounded-xl ${
-                zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""
-              }`}
-              style={
-                zoomable && zoomActive
-                  ? {
-                      width: `${zoomLevel * 100}%`,
-                      maxWidth: "none",
-                      height: "auto",
-                      maxHeight: "none",
-                      transform: `translate(${((50 - zoomOrigin.x) * (zoomLevel - 1)) / zoomLevel}%, ${(
-                        (50 - zoomOrigin.y) *
-                        (zoomLevel - 1)
-                      ) / zoomLevel}%)`,
-                      objectFit: "contain",
-                      WebkitTouchCallout: "none",
-                    }
-                  : {
-                      width: "100%",
-                      maxWidth: "100%",
-                      height: "auto",
-                      maxHeight: "82vh",
-                      objectFit: "contain",
-                      WebkitTouchCallout: "none",
-                    }
-              }
-              draggable={false}
-            />
-          </div>
+            >
+              <img
+                src={fullSrc ?? src.src}
+                alt={alt}
+                width={fullWidth ?? src.width}
+                height={fullHeight ?? src.height}
+                loading="lazy"
+                decoding="async"
+                data-zoom-image
+                ref={modalImageRef}
+                onLoad={handleImageLoad}
+                onContextMenu={preventContextMenu}
+                class={`select-none rounded-xl ${
+                  zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""
+                }`}
+                style={
+                  zoomable && zoomActive
+                    ? {
+                        width: `${zoomLevel * 100}%`,
+                        maxWidth: "none",
+                        height: "auto",
+                        maxHeight: "none",
+                        transform: `translate(${((50 - zoomOrigin.x) * (zoomLevel - 1)) / zoomLevel}%, ${(
+                          (50 - zoomOrigin.y) *
+                          (zoomLevel - 1)
+                        ) / zoomLevel}%)`,
+                        objectFit: "contain",
+                        WebkitTouchCallout: "none",
+                      }
+                    : {
+                        width: "100%",
+                        maxWidth: "100%",
+                        height: "auto",
+                        maxHeight: "82vh",
+                        objectFit: "contain",
+                        WebkitTouchCallout: "none",
+                      }
+                }
+                draggable={false}
+              />
+            </div>
 
-          {caption && (
-            <p id={captionId} class="mt-2 text-center text-sm text-base-content/70">
-              {caption}
-            </p>
-          )}
+            {caption && (
+              <p id={captionId} class="mt-2 text-center text-sm text-base-content/70">
+                {caption}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </figure>
   );
 }

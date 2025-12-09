@@ -1,6 +1,7 @@
 ---
 import LightboxImageComponent from "./LightboxImage.tsx";
 import { getImage } from "astro:assets";
+import { Picture } from "astro:assets";
 
 export type LightboxImageProps = {
   src: ImageMetadata;
@@ -24,6 +25,7 @@ const {
   zoomLevel = 2,
 } = Astro.props as LightboxImageProps;
 
+const previewWidths = widths ?? [640, 960, 1280, 1600];
 const maxModalWidth = modalWidths && modalWidths.length > 0 ? Math.max(...modalWidths) : src.width;
 const targetWidth = Math.min(4096, Math.max(src.width, Math.ceil(maxModalWidth * zoomLevel)));
 const fullImage = await getImage({
@@ -47,4 +49,18 @@ const props = {
 };
 ---
 
-<LightboxImageComponent client:idle {...props} />
+<LightboxImageComponent client:idle {...props}>
+  <div
+    class="block w-full cursor-zoom-in rounded-xl border border-base-300 shadow-md transition hover:-translate-y-0.5 overflow-hidden [&>picture>img]:object-contain [&>picture>img]:w-full [&>picture>img]:h-full [&>picture>img]:select-none"
+  >
+    <Picture
+      src={src}
+      alt={alt}
+      widths={previewWidths}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={priority ? "high" : "auto"}
+      pictureAttributes={{ class: "block w-full h-full" }}
+    />
+  </div>
+</LightboxImageComponent>
