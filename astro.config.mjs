@@ -8,5 +8,15 @@ export default defineConfig({
   integrations: [preact(), mdx()],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        react: "preact/compat",
+        "react-dom": "preact/compat",
+        "react-dom/test-utils": "preact/test-utils",
+      },
+    },
+    ssr: {
+      noExternal: ["@floating-ui/react", "@floating-ui/react-dom"],
+    },
   },
 });

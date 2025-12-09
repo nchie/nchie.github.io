@@ -1,14 +1,20 @@
-import { useEffect, useId, useRef, useState } from "preact/hooks";
+import { useEffect, useId, useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import {
   autoUpdate,
-  computePosition,
   flip,
   offset,
   shift,
   size,
+  useFloating,
+  useClick,
+  useDismiss,
+  useHover,
+  useFocus,
+  useInteractions,
+  useRole,
   type Placement,
-} from "@floating-ui/dom";
+} from "@floating-ui/react";
 
 type Position = "top" | "bottom" | "left" | "right";
 type Tone =
@@ -52,86 +58,95 @@ export default function TooltipFloating({
   tone = "primary",
   children,
 }: TooltipProps) {
-  const referenceRef = useRef<HTMLSpanElement>(null);
-  const floatingRef = useRef<HTMLDivElement>(null);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
-  const [resolvedPlacement, setResolvedPlacement] = useState<Placement>(
-    placementMap[position],
-  );
+  const [isTouch, setIsTouch] = useState(false);
+  const {
+    refs,
+    floatingStyles,
+    placement,
+    context,
+  } = useFloating({
+    placement: placementMap[position],
+    strategy: "fixed",
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(10),
+      flip({ fallbackAxisSideDirection: "start" }),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ availableWidth, elements }) {
+          elements.floating.style.maxWidth = `${
+            Math.max(availableWidth, 180)
+          }px`;
+        },
+      }),
+    ],
+    open: isOpen,
+    onOpenChange: setIsOpen,
+  });
   const id = useId();
 
   useEffect(() => {
+    const markTouch = () => setIsTouch(true);
+    window.addEventListener("touchstart", markTouch, { passive: true, once: true });
+    return () => window.removeEventListener("touchstart", markTouch);
+  }, []);
+
+  // Close the tooltip whenever the user scrolls to avoid jank on mobile.
+  useEffect(() => {
     if (!isOpen) return;
-    const referenceEl = referenceRef.current;
-    const floatingEl = floatingRef.current;
-    if (!referenceEl || !floatingEl) return;
+    const closeOnScroll = () => setIsOpen(false);
+    window.addEventListener("scroll", closeOnScroll, { passive: true });
+    return () => window.removeEventListener("scroll", closeOnScroll);
+  }, [isOpen]);
 
-    return autoUpdate(referenceEl, floatingEl, () => {
-      computePosition(referenceEl, floatingEl, {
-        placement: placementMap[position],
-        strategy: "fixed",
-        middleware: [
-          offset(10),
-          flip({ fallbackAxisSideDirection: "start" }),
-          shift({ padding: 8 }),
-          size({
-            padding: 8,
-            apply({ availableWidth, elements }) {
-              // Prevent the tooltip from overflowing the viewport horizontally.
-              elements.floating.style.maxWidth = `${
-                Math.max(availableWidth, 180)
-              }px`;
-            },
-          }),
-        ],
-      }).then(({ x, y, placement }) => {
-        setCoords({ x, y });
-        setResolvedPlacement(placement);
-      });
-    });
-  }, [isOpen, position]);
-
-  const show = () => setIsOpen(true);
-  const hide = () => setIsOpen(false);
-  const toggle = () => setIsOpen((open) => !open);
+  const hover = useHover(context, { move: false, enabled: !isTouch });
+  const focus = useFocus(context, { enabled: !isTouch });
+  const click = useClick(context, { toggle: true });
+  const dismiss = useDismiss(context, {
+    escapeKey: true,
+    outsidePress: true,
+    outsidePressEvent: "pointerdown",
+  });
+  const role = useRole(context, { role: "tooltip" });
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    hover,
+    focus,
+    click,
+    dismiss,
+    role,
+  ]);
 
   const placementClass =
-    resolvedPlacement === "top" || resolvedPlacement === "bottom"
+    placement === "top" || placement === "bottom"
       ? "origin-center"
-      : resolvedPlacement.startsWith("left")
+      : placement.startsWith("left")
         ? "origin-right"
         : "origin-left";
 
   return (
     <span class="relative inline-flex">
       <span
-        ref={referenceRef}
+        ref={refs.setReference}
         tabIndex={0}
         aria-describedby={isOpen ? id : undefined}
-        onMouseEnter={show}
-        onMouseLeave={hide}
-        onFocus={show}
-        onBlur={hide}
-        onClick={toggle}
         class="cursor-help text-primary underline decoration-dashed underline-offset-4 transition-colors hover:text-primary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
+        {...getReferenceProps()}
       >
         {children}
       </span>
 
       <div
-        ref={floatingRef}
+        ref={refs.setFloating}
         id={id}
         role="tooltip"
         aria-hidden={!isOpen}
-        style={{
-          position: "fixed",
-          top: `${coords.y}px`,
-          left: `${coords.x}px`,
-        }}
+        style={floatingStyles}
         class={`pointer-events-none z-50 max-w-[min(24rem,calc(100vw-2rem))] rounded-lg border px-3 py-2 text-sm leading-snug shadow-xl backdrop-blur-sm transition duration-150 ease-out ${toneClass[tone]} ${placementClass} ${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
+        {...getFloatingProps()}
       >
         {text}
       </div>
