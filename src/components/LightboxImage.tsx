@@ -170,6 +170,10 @@ export default function LightboxImage({
 
   const handleMouseLeave = () => resetZoom();
 
+  const preventContextMenu = (event: Event) => {
+    event.preventDefault();
+  };
+
   const startLongPress = (event: TouchEvent) => {
     if (!zoomable) return;
     const touch = event.touches[0];
@@ -220,6 +224,7 @@ export default function LightboxImage({
         data-lightbox-trigger
         onClick={open}
         ref={triggerRef}
+        onContextMenu={preventContextMenu}
       >
         <img
           src={src.src}
@@ -230,6 +235,8 @@ export default function LightboxImage({
           decoding="async"
           fetchpriority={priority ? "high" : "auto"}
           class="w-full cursor-zoom-in rounded-xl border border-base-300 object-contain shadow-md transition hover:-translate-y-0.5"
+          draggable={false}
+          style={{ WebkitTouchCallout: "none" }}
         />
       </button>
 
@@ -301,6 +308,7 @@ export default function LightboxImage({
             onTouchMove={handleTouchMove}
             onTouchEnd={endTouch}
             onTouchCancel={endTouch}
+            onContextMenu={preventContextMenu}
             style={
               zoomable && zoomActive
                 ? {
@@ -331,15 +339,18 @@ export default function LightboxImage({
               data-zoom-image
               ref={modalImageRef}
               onLoad={handleImageLoad}
+              onContextMenu={preventContextMenu}
               class={`max-h-[82vh] w-full select-none rounded-xl object-contain ${zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""}`}
               style={
                 zoomable
                   ? {
                       transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
                       transform: zoomActive ? `scale(${zoomLevel})` : "scale(1)",
+                      WebkitTouchCallout: "none",
                     }
-                  : undefined
+                  : { WebkitTouchCallout: "none" }
               }
+              draggable={false}
             />
           </div>
 
