@@ -10,3 +10,4 @@ _site/
 .bundle/
 vendor/
 Gemfile.lock
+.npm-cache/
