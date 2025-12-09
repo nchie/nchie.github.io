@@ -8,6 +8,7 @@ type LightboxImageProps = {
   caption?: string;
   widths?: number[];
   modalWidths?: number[];
+  priority?: boolean;
 };
 
 const {
@@ -16,6 +17,7 @@ const {
   caption,
   widths = [640, 960, 1280, 1600],
   modalWidths = [960, 1280, 1600, 2048],
+  priority = false,
 } = Astro.props as LightboxImageProps;
 
 const idBase = `lightbox-${Math.random().toString(36).slice(2)}`;
@@ -41,7 +43,8 @@ const closeId = `${idBase}-close`;
       widths={widths}
       formats={["webp"]}
       fallbackFormat={src.format}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      fetchpriority={priority ? "high" : "auto"}
       pictureAttributes={{ class: "block" }}
       class="w-full cursor-zoom-in rounded-xl border border-base-300 object-contain shadow-md transition hover:-translate-y-0.5"
     />
@@ -93,5 +96,5 @@ const closeId = `${idBase}-close`;
     </div>
   </div>
 
-  <LightboxImageController client:load idBase={idBase} />
+  <LightboxImageController client:idle idBase={idBase} />
 </figure>

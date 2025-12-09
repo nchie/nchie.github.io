@@ -9,8 +9,9 @@
 }
 
 @theme {
-  --font-sans: "Work Sans", system-ui, -apple-system, sans-serif;
-  --font-serif: "Source Serif 4", Georgia, serif;
+  /* System stacks closest to Work Sans / Source Serif while avoiding webfont downloads */
+  --font-sans: -apple-system, "Segoe UI", "Roboto", "Noto Sans", "Ubuntu", "Cantarell", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", Times, serif;
 }
 
 @layer base {
