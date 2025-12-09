@@ -20,12 +20,12 @@ const {
   priority = false,
 } = Astro.props as LightboxImageProps;
 
-const idBase = `lightbox-${Math.random().toString(36).slice(2)}`;
-const captionId = caption ? `${idBase}-caption` : undefined;
-const overlayId = `${idBase}-overlay`;
-const frameId = `${idBase}-frame`;
-const triggerId = `${idBase}-trigger`;
-const closeId = `${idBase}-close`;
+  const idBase = `lightbox-${Math.random().toString(36).slice(2)}`;
+  const captionId = caption ? `${idBase}-caption` : undefined;
+  const overlayId = `${idBase}-overlay`;
+  const frameId = `${idBase}-frame`;
+  const triggerId = `${idBase}-trigger`;
+  const closeId = `${idBase}-close`;
 ---
 
 <figure class="mx-auto w-full max-w-3xl" data-lightbox-root={idBase}>
@@ -34,6 +34,7 @@ const closeId = `${idBase}-close`;
     type="button"
     aria-haspopup="dialog"
     aria-controls={overlayId}
+    aria-expanded="false"
     class="block w-full text-left focus:outline-none focus:ring focus:ring-primary"
     data-lightbox-trigger
   >
@@ -59,12 +60,15 @@ const closeId = `${idBase}-close`;
     aria-label={caption || alt}
     aria-describedby={captionId}
     aria-hidden="true"
-    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-4"
+    data-state="closed"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200 ease-out data-[state=open]:opacity-100 data-[state=open]:pointer-events-auto data-[state=opening]:opacity-100 data-[state=opening]:pointer-events-auto"
     data-lightbox-overlay
   >
     <div
       id={frameId}
-      class="relative w-[92vw] max-w-6xl max-h-[92vh] overflow-hidden rounded-2xl border border-base-300 bg-base-100 p-4 shadow-2xl outline-none"
+      data-state="closed"
+      data-loaded="false"
+      class="relative w-[92vw] max-w-6xl max-h-[92vh] overflow-hidden rounded-2xl border border-base-300 bg-base-100 p-4 shadow-2xl outline-none opacity-0 scale-95 transition duration-200 ease-out focus-visible:ring focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 data-[state=open]:opacity-100 data-[state=open]:scale-100"
       data-lightbox-frame
     >
       <button
@@ -76,6 +80,16 @@ const closeId = `${idBase}-close`;
       >
         ×
       </button>
+
+      <div
+        data-lightbox-spinner
+        class="pointer-events-none absolute inset-0 grid place-items-center text-base-content/70 transition-opacity duration-200"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span class="loading loading-spinner loading-lg" aria-hidden="true"></span>
+        <span class="sr-only">Loading full-size image…</span>
+      </div>
 
       <Picture
         src={src}
