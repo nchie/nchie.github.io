@@ -38,12 +38,16 @@ Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some
 <LightboxImage
   src={solderedBDM050}
   alt="Soldered to test pads for the InvenSense ICM-42607-P on a DualSense BDM-050"
+  zoomable={true}
+  zoomLevel={2}
 />
 
 ### Analyzing
 <LightboxImage
   src={analyzingBDM050}
   alt="Using Saleae Logic 2 to analyze the communication between the DualSense BDM-050's MCU and its InvenSense ICM-42607-P IMU"
+  zoomable={true}
+  zoomLevel={2}
 />
 
 [TODO: Insert video IMG_3651.MOV here?]
@@ -61,6 +65,8 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
   src={whoAmI}
   alt="Capturing WHO_AM_I in Saleae Logic 2"
   caption="The very first command is 0xF5, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. 0xF5 therefore means 'read 0x75 (WHO_AM_I)', to which it gets the expected 0x60 back."
+  zoomable={true}
+  zoomLevel={3}
 />
 
 CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
@@ -69,6 +75,8 @@ CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we
   src={saleaeLogic}
   alt="Saleae Logic 2 with custom high-level analyzer for the ICM-42607-P IMU"
   caption="The LLM-generated extension made it much easier to understand what's happening"
+  zoomable={true}
+  zoomLevel={3}
 />
 
 These are the transaction summaries from capturing the boot-up sequence:

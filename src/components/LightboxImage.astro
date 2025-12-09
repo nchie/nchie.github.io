@@ -1,7 +1,7 @@
 ---
 import LightboxImageComponent from "./LightboxImage.tsx";
 
-type LightboxImageProps = {
+export type LightboxImageProps = {
   src: ImageMetadata;
   alt: string;
   caption?: string;
@@ -12,7 +12,27 @@ type LightboxImageProps = {
   zoomLevel?: number;
 };
 
-const props = Astro.props as LightboxImageProps;
+const {
+  src,
+  alt,
+  caption,
+  widths,
+  modalWidths,
+  priority = false,
+  zoomable = true,
+  zoomLevel = 2,
+} = Astro.props as LightboxImageProps;
+
+const props = {
+  src,
+  alt,
+  caption,
+  widths,
+  modalWidths,
+  priority,
+  zoomable,
+  zoomLevel,
+};
 ---
 
 <LightboxImageComponent client:idle {...props} />
