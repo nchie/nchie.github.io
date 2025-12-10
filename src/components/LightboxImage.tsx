@@ -60,6 +60,8 @@ export default function LightboxImage({
   const previousOverflow = useRef<string>("");
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const longPressTimer = useRef<number>();
+  const rafIdRef = useRef<number>();
+  const pendingPointRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -169,15 +171,20 @@ export default function LightboxImage({
   const handleMouseEnter = (event: MouseEvent) => {
     if (!zoomable) return;
     setZoomActive(true);
-    setZoomFromPoint(event.clientX, event.clientY);
+    pendingPointRef.current = { x: event.clientX, y: event.clientY };
+    startRafLoop();
   };
 
   const handleMouseMove = (event: MouseEvent) => {
     if (!zoomable || !zoomActive) return;
-    setZoomFromPoint(event.clientX, event.clientY);
+    pendingPointRef.current = { x: event.clientX, y: event.clientY };
+    startRafLoop();
   };
 
-  const handleMouseLeave = () => resetZoom();
+  const handleMouseLeave = () => {
+    stopRafLoop();
+    resetZoom();
+  };
 
   const preventContextMenu = (event: Event) => {
     event.preventDefault();
@@ -210,6 +217,27 @@ export default function LightboxImage({
       event.preventDefault();
       resetZoom();
     }
+  };
+
+  const startRafLoop = () => {
+    if (rafIdRef.current != null) return;
+    const tick = () => {
+      const point = pendingPointRef.current;
+      if (point) {
+        setZoomFromPoint(point.x, point.y);
+        pendingPointRef.current = null;
+      }
+      rafIdRef.current = window.requestAnimationFrame(tick);
+    };
+    rafIdRef.current = window.requestAnimationFrame(tick);
+  };
+
+  const stopRafLoop = () => {
+    if (rafIdRef.current != null) {
+      window.cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = undefined;
+    }
+    pendingPointRef.current = null;
   };
 
   const overlayClasses =
