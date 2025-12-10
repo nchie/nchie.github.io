@@ -156,6 +156,7 @@ export default function LightboxImage({
   const resetZoom = () => {
     window.clearTimeout(longPressTimer.current);
     longPressTimer.current = undefined;
+    stopRafLoop();
     setZoomActive(false);
   };
 
@@ -168,13 +169,6 @@ export default function LightboxImage({
     setZoomOrigin({ x: Math.min(100, Math.max(0, x)), y: Math.min(100, Math.max(0, y)) });
   };
 
-  const handleMouseEnter = (event: MouseEvent) => {
-    if (!zoomable) return;
-    setZoomActive(true);
-    pendingPointRef.current = { x: event.clientX, y: event.clientY };
-    startRafLoop();
-  };
-
   const handleMouseMove = (event: MouseEvent) => {
     if (!zoomable || !zoomActive) return;
     pendingPointRef.current = { x: event.clientX, y: event.clientY };
@@ -183,6 +177,17 @@ export default function LightboxImage({
 
   const handleMouseLeave = () => {
     stopRafLoop();
+    resetZoom();
+  };
+
+  const handleMouseDown = (event: MouseEvent) => {
+    if (!zoomable) return;
+    setZoomActive(true);
+    pendingPointRef.current = { x: event.clientX, y: event.clientY };
+    startRafLoop();
+  };
+
+  const handleMouseUp = () => {
     resetZoom();
   };
 
@@ -350,14 +355,15 @@ export default function LightboxImage({
               aria-pressed={zoomable ? (zoomActive ? "true" : "false") : undefined}
               data-zoom-target
               ref={zoomContainerRef}
-              onMouseEnter={handleMouseEnter}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              onKeyDown={handleZoomKeyDown}
-              onTouchStart={startLongPress}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={endTouch}
-              onTouchCancel={endTouch}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onKeyDown={handleZoomKeyDown}
+            onTouchStart={startLongPress}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={endTouch}
+            onTouchCancel={endTouch}
               onContextMenu={preventContextMenu}
             >
               <img
