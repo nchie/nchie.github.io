@@ -304,13 +304,13 @@ export default function LightboxImage({
         >
           <div
             id={frameId}
-            data-state={frameState}
-            data-loaded={loaded ? "true" : "false"}
-            class={`${frameClasses} ${frameStateClasses}`}
-            data-lightbox-frame
-            ref={frameRef}
-            tabIndex={-1}
-          >
+          data-state={frameState}
+          data-loaded={loaded ? "true" : "false"}
+          class={`${frameClasses} ${frameStateClasses} flex flex-col items-center gap-3`}
+          data-lightbox-frame
+          ref={frameRef}
+          tabIndex={-1}
+        >
           <div class="pointer-events-none absolute inset-x-0 top-0 flex justify-end gap-2 px-4 py-3">
             <button
               id={closeId}
@@ -340,12 +340,12 @@ export default function LightboxImage({
             data-zoomable={zoomable ? "true" : "false"}
             data-zoom-state={zoomActive ? "active" : "idle"}
             data-zoom-level={zoomLevel}
-            class="group relative isolate flex max-h-[82vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
-              tabIndex={zoomable ? 0 : -1}
-              role={zoomable ? "button" : undefined}
-              aria-label={zoomable ? "Toggle zoom" : undefined}
-              aria-pressed={zoomable ? (zoomActive ? "true" : "false") : undefined}
-              data-zoom-target
+            class="group relative isolate flex max-h-[70vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
+            tabIndex={zoomable ? 0 : -1}
+            role={zoomable ? "button" : undefined}
+            aria-label={zoomable ? "Toggle zoom" : undefined}
+            aria-pressed={zoomable ? (zoomActive ? "true" : "false") : undefined}
+            data-zoom-target
               ref={zoomContainerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
@@ -380,35 +380,35 @@ export default function LightboxImage({
                 class={`select-none rounded-xl ${
                   zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""
                 }`}
-                style={
-                  zoomable && zoomActive
-                    ? {
-                        width: `${zoomLevel * 100}%`,
-                        maxWidth: "none",
-                        height: "auto",
-                        maxHeight: "none",
-                        transform: `translate(${((50 - zoomOrigin.x) * (zoomLevel - 1)) / zoomLevel}%, ${(
-                          (50 - zoomOrigin.y) *
-                          (zoomLevel - 1)
-                        ) / zoomLevel}%)`,
-                        objectFit: "contain",
-                        WebkitTouchCallout: "none",
-                      }
-                    : {
-                        width: "100%",
-                        maxWidth: "100%",
-                        height: "auto",
-                        maxHeight: "82vh",
-                        objectFit: "contain",
-                        WebkitTouchCallout: "none",
-                      }
-                }
+              style={
+                zoomable && zoomActive
+                  ? {
+                      width: `${zoomLevel * 100}%`,
+                      maxWidth: "none",
+                      height: "auto",
+                      maxHeight: "none",
+                      transform: `translate(${((50 - zoomOrigin.x) * (zoomLevel - 1)) / zoomLevel}%, ${(
+                        (50 - zoomOrigin.y) *
+                        (zoomLevel - 1)
+                      ) / zoomLevel}%)`,
+                      objectFit: "contain",
+                      WebkitTouchCallout: "none",
+                    }
+                  : {
+                      width: "100%",
+                      maxWidth: "100%",
+                      height: "auto",
+                      maxHeight: "70vh",
+                      objectFit: "contain",
+                      WebkitTouchCallout: "none",
+                    }
+              }
                 draggable={false}
               />
             </div>
 
             {caption && (
-              <p id={captionId} class="mt-2 text-center text-sm text-base-content/70">
+              <p id={captionId} class="mt-1 text-center text-sm text-base-content/70">
                 {caption}
               </p>
             )}
