@@ -359,7 +359,7 @@ export default function LightboxImage({
             onContextMenu={preventContextMenu}
           >
             {zoomable && (
-              <span class="pointer-events-none absolute bottom-3 right-3 sm:right-12 md:right-16 lg:right-24 z-20 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-base-content/80 bg-transparent shadow-none backdrop-blur-0 transition-opacity duration-150"
+              <span class="pointer-events-none absolute bottom-3 right-3 sm:right-12 md:right-16 lg:right-24 z-20 inline-flex items-center gap-1 px-1.5 py-0.25 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-base-content/80 bg-white/30 dark:bg-white/15 shadow-sm backdrop-blur rounded-full transition-opacity duration-150"
                 style={{ opacity: zoomActive ? 0 : 1 }}>
                 <span aria-hidden="true">🔍</span>
                 Press to zoom
