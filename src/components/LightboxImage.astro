@@ -51,7 +51,7 @@ const props = {
 
 <LightboxImageComponent client:idle {...props}>
   <div
-    class="block w-full cursor-zoom-in rounded-xl border border-base-300 shadow-md transition hover:-translate-y-0.5 overflow-hidden [&>picture>img]:object-contain [&>picture>img]:w-full [&>picture>img]:h-full [&>picture>img]:select-none"
+    class="block w-full cursor-zoom-in rounded-xl border border-base-300 shadow-md transition overflow-hidden [&>picture>img]:object-contain [&>picture>img]:w-full [&>picture>img]:h-full [&>picture>img]:select-none"
   >
     <Picture
       src={src}

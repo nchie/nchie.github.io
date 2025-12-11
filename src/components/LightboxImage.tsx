@@ -277,7 +277,7 @@ export default function LightboxImage({
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           fetchpriority={priority ? "high" : "auto"}
-          class="w-full cursor-zoom-in rounded-xl border border-base-300 object-contain shadow-md transition hover:-translate-y-0.5"
+          class={`w-full ${zoomable ? "cursor-zoom-in" : "cursor-default"} rounded-xl border border-base-300 object-contain shadow-md transition`}
           draggable={false}
           style={{ WebkitTouchCallout: "none" }}
         />
@@ -340,7 +340,9 @@ export default function LightboxImage({
             data-zoomable={zoomable ? "true" : "false"}
             data-zoom-state={zoomActive ? "active" : "idle"}
             data-zoom-level={zoomLevel}
-            class="group relative isolate flex max-h-[70vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12"
+            class={`group relative isolate flex max-h-[70vh] w-full items-center justify-center overflow-hidden rounded-xl bg-base-200/60 outline-none ring-primary/60 transition focus-visible:ring focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 motion-reduce:transition-none mt-10 md:mt-12 ${
+              zoomable ? (zoomActive ? "cursor-zoom-out" : "cursor-zoom-in") : "cursor-default"
+            }`}
             tabIndex={zoomable ? 0 : -1}
             role={zoomable ? "button" : undefined}
             aria-label={zoomable ? "Toggle zoom" : undefined}
@@ -374,12 +376,14 @@ export default function LightboxImage({
                 loading="lazy"
                 decoding="async"
                 data-zoom-image
-                ref={modalImageRef}
-                onLoad={handleImageLoad}
-                onContextMenu={preventContextMenu}
-                class={`select-none rounded-xl ${
-                  zoomable ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none" : ""
-                }`}
+              ref={modalImageRef}
+              onLoad={handleImageLoad}
+              onContextMenu={preventContextMenu}
+              class={`select-none rounded-xl ${
+                zoomable
+                  ? "transition-transform duration-200 ease-out will-change-transform motion-reduce:transition-none"
+                  : ""
+              } ${zoomable ? (zoomActive ? "cursor-zoom-out" : "cursor-zoom-in") : "cursor-default"}`}
               style={
                 zoomable && zoomActive
                   ? {
