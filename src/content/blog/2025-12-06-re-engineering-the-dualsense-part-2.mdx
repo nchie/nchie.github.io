@@ -20,25 +20,26 @@ In the last post I went through the idea I've had, some basic investigation, and
 
 ### Practicing
 
-As I mentioned previously, my soldering experience is almost non-existent and in the past I've ended up bricking things. This time I wanted to learn it properly so took some time to practice soldering components onto SMD practice boards. After getting the basics down I ended up buying a cheap malfunctioning (stick drift) controller to practice on (revision 2, BDM-020), and to my surprise I found it much easier than I had imagined to solder thin wires to (random) test pads. While at it I decided I wanted to continue on the BDM-020 a little bit more, but the BDM-020 doesn't have any obvious test pads for the IMU, so I scraped some vias hoping to find pads which had continuity to the IMU. Sadly could not find any, and therefore I ended up soldering wires to the vias instead to analyze the communication between the MCU and IMU.
+As I mentioned previously, my soldering experience is almost non-existent and in the past I've ended up bricking things. This time I wanted to learn it properly so I took some time to practice soldering components onto SMD practice boards. After getting the basics down I ended up buying a cheap malfunctioning (stick drift) controller to practice on (revision 2, BDM-020), and to my surprise I found it much easier than I had imagined to solder thin wires to (random) test pads. While at it I decided I wanted to continue on the BDM-020 a little bit more, but the BDM-020 doesn't have any obvious test pads for the IMU, so I scraped some vias hoping to find pads which had continuity to the IMU. Sadly I could not find any, and therefore I ended up soldering wires to the vias instead to analyze the communication between the MCU and IMU.
 
 <LightboxImage
   src={solderedBDM020}
   alt="Soldered to vias for the InvenSense ICM-40608's traces on a DualSense BDM-020"
-  caption="Not the best soldering, but good enough for temporary analysis purposes"
+  caption="Not the best soldering, but good enough for temporary analysis purposes."
 />
 
-I won't go into much detail regarding the BDM-020 but I will say that it's very similar except it's using a older but slightly higher specced IMU: The InvenSense ICM-40608. I will however be mentioning some differences I've found between how the BDM-020 and the BDM-050 use their IMUs as we go.
+I won't go into much detail regarding the BDM-020, but I will say that it's very similar except it's using a older but slightly higher specced IMU: The InvenSense ICM-40608. I will however be mentioning some differences I've found between how the BDM-020 and the BDM-050 use their IMUs as we go.
 
 ### Soldering onto the BDM-050 PCB
 
-Soldering was surprisingly easy with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then wetted the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some Kapton tape on top of it to make it a little bit more durable.
+Soldering was surprisingly straightforward with a small enough tip (0.2mm conical) and some decent (lead-free) 0.35mm solder - I didn't even really need the extra flux. I made my own test probes by attaching 38 AWG enamelled wires to 30 AWG PVC wires using solder, and then soldering the PVC wires to Dupont headers because I don't have a crimp tool. I then tinned the test pads as well as the enamelled wire, shaped the end of the wire into a "hook" (I found the joints to be much more durable when doing this) and simply connected them as the test pad's solder was molten. I then put some Kapton tape on top of it to make it a little bit more durable.
 
 <LightboxImage
   src={solderedBDM050}
   alt="Soldered to test pads for the InvenSense ICM-42607-P on a DualSense BDM-050"
   zoomable={true}
   zoomLevel={2}
+  caption="The finished result after soldering wires to the test pads"
 />
 
 ### Analyzing
@@ -64,12 +65,12 @@ By looking at the signals in Logic 2 we can see that the CS (Enable (TODO: Add d
 <LightboxImage
   src={whoAmI}
   alt="Capturing WHO_AM_I in Saleae Logic 2"
-  caption="The very first command is 0xF5, but the first bit tells whether it's a read (1) or write (0), and the 7 remaining bits tells which register. 0xF5 therefore means 'read 0x75 (WHO_AM_I)', to which it gets the expected 0x60 back."
+  caption="The very first command is 0xF5, but the first bit tell whether it's a read (1) or write (0), and the 7 remaining bits tell which register. 0xF5 therefore means 'read 0x75 (WHO_AM_I)', to which it gets the expected 0x60 back."
   zoomable={true}
   zoomLevel={3}
 />
 
-CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to undestand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
+CPOL=1 and CPHA=1 means Mode 3. Now we can see the data going in and out, but we have to cross-reference everything between the datasheet and Logic 2 to understand what's happening. Luckily Logic 2 supports extensions in which one can implement higher level analyzers on top of SPI. Since we live in the age of LLMs, I thought I'd attach the IMU's datasheet and ask ChatGPT to generate the extension for me, and with a little bit of back and forth, I ended up with an extension that gave me human-readable summaries of all transactions seen in my capture (repository available here [TODO: Link to repo]).
 
 <LightboxImage
   src={saleaeLogic}
@@ -107,7 +108,7 @@ Some observations from this sequence:
 - INT1 is configured to signal DATA_READY
   - I found that each read was preceded by an interrupt on the INT1 line on the BDM-020, but the BDM-050 doesn't have test pads for the INT1 line so I will assume it works the same.
 
-After this we see repeating reads similar to this one to get the gyro data:
+After this, we see repeating reads similar to the following to obtain the gyro data:
 
 ```
 READ 14 byte(s) - TEMP_DATA1 (0x09): [0xFE 0xA7 0x06 0xEF 0x05 0xB6 0xE2 0x37 0xFF 0xE8 0xFF 0xE7 0x00 0x07] - TEMP_DATA: ≈ 22.30 °C; ACCEL: X=+1775 (+0.217 g, +2.125 m/s²), Y=+1462 (+0.178 g, +1.750 m/s²), Z=-7625 (-0.931 g, -9.128 m/s²); GYRO: X=-24 (-1.463 °/s), Y=-25 (-1.524 °/s), Z=+7 (+0.427 °/s)
